@@ -1,0 +1,27 @@
+[
+  {
+    "id": "event-1",
+    "title": "Clase en Vivo — Introducción",
+    "description": "Nuestra primera sesión en vivo. Trae tus preguntas y tu corazón abierto.",
+    "date": "2025-02-01",
+    "time": "11:00",
+    "timezone": "America/New_York",
+    "duration": "60 min",
+    "type": "live",
+    "meetingUrl": "REEMPLAZA_CON_LINK_DE_ZOOM_O_MEET",
+    "recurring": false
+  },
+  {
+    "id": "event-2",
+    "title": "Meditación Grupal Semanal",
+    "description": "Cada semana nos reunimos para meditar juntas. Una práctica colectiva poderosa.",
+    "date": "2025-02-08",
+    "time": "10:00",
+    "timezone": "America/New_York",
+    "duration": "30 min",
+    "type": "meditation",
+    "meetingUrl": "REEMPLAZA_CON_LINK_DE_ZOOM_O_MEET",
+    "recurring": true,
+    "recurringDay": "saturday"
+  }
+]
