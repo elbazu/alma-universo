@@ -1,0 +1,80 @@
+[
+  {
+    "id": "course-1",
+    "title": "Módulo 0 — Bienvenida y Orientación",
+    "description": "Empieza aquí. Conoce cómo está organizada la comunidad y cómo sacarle el máximo provecho.",
+    "thumbnail": "/images/placeholder-course.jpg",
+    "modules": [
+      {
+        "id": "m0-1",
+        "title": "Cómo usar esta plataforma",
+        "duration": "5 min",
+        "type": "video",
+        "videoUrl": "REEMPLAZA_CON_URL_DE_VIDEO",
+        "description": "Una guía rápida para navegar la comunidad.",
+        "free": true
+      },
+      {
+        "id": "m0-2",
+        "title": "Tu diario de intención",
+        "duration": "10 min",
+        "type": "video",
+        "videoUrl": "REEMPLAZA_CON_URL_DE_VIDEO",
+        "description": "Cómo usar un diario para potenciar tu proceso.",
+        "free": true
+      }
+    ]
+  },
+  {
+    "id": "course-2",
+    "title": "Módulo 1 — Reconectando con tu Alma",
+    "description": "El primer paso en tu viaje interior. Ejercicios prácticos para escuchar tu voz interior.",
+    "thumbnail": "/images/placeholder-course.jpg",
+    "modules": [
+      {
+        "id": "m1-1",
+        "title": "¿Qué significa reconectar?",
+        "duration": "15 min",
+        "type": "video",
+        "videoUrl": "REEMPLAZA_CON_URL_DE_VIDEO",
+        "description": "Introducción al concepto de conexión interior.",
+        "free": false
+      },
+      {
+        "id": "m1-2",
+        "title": "Meditación guiada — El silencio interior",
+        "duration": "20 min",
+        "type": "video",
+        "videoUrl": "REEMPLAZA_CON_URL_DE_VIDEO",
+        "description": "Una meditación guiada para encontrar calma profunda.",
+        "free": false
+      },
+      {
+        "id": "m1-3",
+        "title": "Ejercicio: Carta a tu yo futuro",
+        "duration": "Actividad",
+        "type": "activity",
+        "videoUrl": null,
+        "description": "Una actividad de escritura transformadora.",
+        "free": false
+      }
+    ]
+  },
+  {
+    "id": "course-3",
+    "title": "Módulo 2 — Sanando Patrones del Pasado",
+    "description": "Identifica y libera los patrones que te impiden avanzar.",
+    "thumbnail": "/images/placeholder-course.jpg",
+    "modules": [
+      {
+        "id": "m2-1",
+        "title": "Próximamente...",
+        "duration": "",
+        "type": "coming-soon",
+        "videoUrl": null,
+        "description": "Este módulo estará disponible pronto.",
+        "free": false
+      }
+    ]
+  }
+]
