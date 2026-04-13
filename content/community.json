@@ -1,0 +1,39 @@
+{
+  "name": "Mi Alma en el Universo",
+  "tagline": "Un espacio para sanar, crecer y conectar con tu esencia más profunda. ✨",
+  "description": "Comunidad para quienes buscan reconectarse con su alma, explorar el bienestar espiritual y vivir con mayor plenitud.",
+  "url": "mi-alma-universo",
+  "accentColor": "#5585ff",
+  "coverImage": "/images/cover.jpg",
+  "logoImage": "/images/logo.jpg",
+  "owner": {
+    "name": "Tu Nombre Aquí",
+    "title": "Fundadora",
+    "avatar": "/images/owner-avatar.jpg",
+    "bio": "Guía espiritual y creadora de contenido de bienestar."
+  },
+  "stats": {
+    "members": 0,
+    "online": 0,
+    "admins": 1
+  },
+  "links": [
+    { "label": "Instagram", "url": "https://instagram.com/tu_cuenta", "public": true },
+    { "label": "YouTube", "url": "https://youtube.com/@tu_canal", "public": true }
+  ],
+  "tabs": {
+    "community": true,
+    "classroom": true,
+    "calendar": true,
+    "members": true,
+    "about": true
+  },
+  "categories": [
+    { "id": "general", "label": "🌟 General", "color": "#5585ff" },
+    { "id": "bienvenida", "label": "🌸 Bienvenida", "color": "#e879a0" },
+    { "id": "victorias", "label": "🔥 Victorias", "color": "#f97316" },
+    { "id": "reflexiones", "label": "🌙 Reflexiones", "color": "#8b5cf6" },
+    { "id": "ayuda", "label": "💫 Ayuda", "color": "#06b6d4" },
+    { "id": "anuncios", "label": "📣 Anuncios", "color": "#10b981" }
+  ]
+}
