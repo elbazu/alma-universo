@@ -1,0 +1,56 @@
+[
+  {
+    "id": "post-1",
+    "title": "👋 ¡Bienvenida a Mi Alma en el Universo!",
+    "content": "Este es el espacio que hemos creado juntas para crecer, sanar y conectar. Aquí encontrarás recursos, clases en vivo, y una comunidad que te apoya en cada paso de tu camino. Empieza presentándote abajo — cuéntanos quién eres y qué te trajo aquí. 💖",
+    "category": "anuncios",
+    "author": {
+      "name": "Tu Nombre Aquí",
+      "avatar": "/images/owner-avatar.jpg",
+      "level": 9,
+      "isOwner": true
+    },
+    "pinned": true,
+    "likes": 0,
+    "comments": 0,
+    "createdAt": "2025-01-01T10:00:00Z",
+    "image": null,
+    "videoUrl": null
+  },
+  {
+    "id": "post-2",
+    "title": "🌙 Meditación de esta semana — Conectando con tu propósito",
+    "content": "Esta semana exploraremos cómo silenciar el ruido exterior para escuchar lo que tu alma realmente necesita. Comparte en los comentarios: ¿Cuál es una palabra que describe tu intención para este mes?",
+    "category": "reflexiones",
+    "author": {
+      "name": "Tu Nombre Aquí",
+      "avatar": "/images/owner-avatar.jpg",
+      "level": 9,
+      "isOwner": true
+    },
+    "pinned": false,
+    "likes": 0,
+    "comments": 0,
+    "createdAt": "2025-01-02T09:00:00Z",
+    "image": "/images/placeholder-post.jpg",
+    "videoUrl": null
+  },
+  {
+    "id": "post-3",
+    "title": "📣 Primer clase en vivo — ¡Marca la fecha!",
+    "content": "Nuestra primera sesión en vivo será pronto. Prepara tus preguntas, tu diario, y un espacio tranquilo. Todos los detalles los encontrarás en la pestaña de Calendario.",
+    "category": "anuncios",
+    "author": {
+      "name": "Tu Nombre Aquí",
+      "avatar": "/images/owner-avatar.jpg",
+      "level": 9,
+      "isOwner": true
+    },
+    "pinned": false,
+    "likes": 0,
+    "comments": 0,
+    "createdAt": "2025-01-03T11:00:00Z",
+    "image": null,
+    "videoUrl": null
+  }
+]
