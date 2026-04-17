@@ -1,21 +1,21 @@
-"use client"
+'use client'
 
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
-import SignInCard from "@/components/auth/SignInCard"
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext'
+import SignInCard from '@/components/auth/SignInCard'
 
 export default function LandingPage() {
-  const { status } = useSession()
+  const { user, isLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/community")
+    if (!isLoading && user) {
+      router.push('/community')
     }
-  }, [status, router])
+  }, [user, isLoading, router])
 
-  if (status === "loading" || status === "authenticated") {
+  if (isLoading || user) {
     return (
       <div className="min-h-screen galaxy-bg flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-white/40 border-t-white rounded-full animate-spin" />

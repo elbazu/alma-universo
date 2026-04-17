@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useSession, signOut } from 'next-auth/react'
+import { useAuth } from '@/context/AuthContext'
 import { Search, Bell, MessageCircle, ChevronDown, LogOut } from 'lucide-react'
 import communityData from '@/content/community.json'
 
@@ -15,7 +15,10 @@ const tabs = [
 
 export default function Navbar() {
   const pathname = usePathname()
-  const { data: session } = useSession()
+  const { user, signOut } = useAuth()
+
+  const displayName = user?.name || user?.email || communityData.owner.name
+  const initial = displayName.charAt(0).toUpperCase()
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -49,27 +52,26 @@ export default function Navbar() {
 
           {/* Actions */}
           <div className="flex items-center gap-2 ml-auto">
-            <button className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 relative">
+            <button className="p-2 rounded-lg hover:bg-gray-100 text-gray-500">
               <MessageCircle size={20} />
             </button>
-            <button className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 relative">
+            <button className="p-2 rounded-lg hover:bg-gray-100 text-gray-500">
               <Bell size={20} />
             </button>
 
-            {/* Avatar + sign out */}
+            {/* Avatar + dropdown */}
             <div className="relative group">
               <div className="avatar w-9 h-9 cursor-pointer bg-brand-100 text-brand-600 text-sm font-semibold">
-                {session?.user?.name?.charAt(0) ?? communityData.owner.name.charAt(0)}
+                {initial}
               </div>
-              {/* Dropdown on hover */}
-              <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-                {session?.user?.email && (
+              <div className="absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+                {user?.email && (
                   <div className="px-3 py-2 border-b border-gray-100">
-                    <p className="text-xs text-gray-500 truncate">{session.user.email}</p>
+                    <p className="text-xs text-gray-500 truncate">{user.email}</p>
                   </div>
                 )}
                 <button
-                  onClick={() => signOut({ callbackUrl: "/" })}
+                  onClick={signOut}
                   className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-gray-600 hover:text-red-500 hover:bg-red-50 rounded-b-xl transition-colors"
                 >
                   <LogOut size={14} />

@@ -1,124 +1,179 @@
-"use client"
+'use client'
 
-import { signIn } from "next-auth/react"
-import { useState } from "react"
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { getPb } from '@/lib/pocketbase'
+
+type Step = 'initial' | 'otp-verify'
 
 export default function SignInCard() {
-  const [email, setEmail] = useState("")
-  const [emailSent, setEmailSent] = useState(false)
-  const [loading, setLoading] = useState<"google" | "email" | null>(null)
-  const [error, setError] = useState("")
+  const [step, setStep] = useState<Step>('initial')
+  const [email, setEmail] = useState('')
+  const [otpCode, setOtpCode] = useState('')
+  const [otpId, setOtpId] = useState('')
+  const [loading, setLoading] = useState<'google' | 'email' | 'verify' | null>(null)
+  const [error, setError] = useState('')
+  const router = useRouter()
 
+  // ── Google OAuth ────────────────────────────────────────────────
   async function handleGoogle() {
-    setLoading("google")
-    setError("")
-    await signIn("google", { callbackUrl: "/community" })
+    setLoading('google')
+    setError('')
+    try {
+      const pb = getPb()
+      await pb.collection('users').authWithOAuth2({ provider: 'google' })
+      router.push('/community')
+    } catch {
+      setError('No se pudo conectar con Google. Intenta de nuevo.')
+      setLoading(null)
+    }
   }
 
-  async function handleEmail(e: React.FormEvent) {
+  // ── Request OTP ─────────────────────────────────────────────────
+  async function handleRequestOTP(e: React.FormEvent) {
     e.preventDefault()
     if (!email) return
-    setLoading("email")
-    setError("")
+    setLoading('email')
+    setError('')
     try {
-      const result = await signIn("email", {
-        email,
-        callbackUrl: "/community",
-        redirect: false,
-      })
-      if (result?.error) {
-        setError("Hubo un problema. Intenta de nuevo.")
-      } else {
-        setEmailSent(true)
-      }
+      const pb = getPb()
+      const result = await pb.collection('users').requestOTP(email)
+      setOtpId(result.otpId)
+      setStep('otp-verify')
     } catch {
-      setError("Hubo un problema. Intenta de nuevo.")
+      setError('No pudimos enviar el código. Verifica tu correo.')
     } finally {
       setLoading(null)
     }
   }
 
+  // ── Verify OTP ──────────────────────────────────────────────────
+  async function handleVerifyOTP(e: React.FormEvent) {
+    e.preventDefault()
+    if (!otpCode || !otpId) return
+    setLoading('verify')
+    setError('')
+    try {
+      const pb = getPb()
+      await pb.collection('users').authWithOTP(otpId, otpCode)
+      router.push('/community')
+    } catch {
+      setError('Código incorrecto o expirado. Intenta de nuevo.')
+      setLoading(null)
+    }
+  }
+
+  // ── OTP verification screen ─────────────────────────────────────
+  if (step === 'otp-verify') {
+    return (
+      <div className="glass-card w-full rounded-2xl px-8 py-8 flex flex-col gap-6">
+        <div className="text-center flex flex-col gap-2">
+          <div className="text-3xl animate-float">✉️</div>
+          <p className="font-display text-white/90 text-lg">Revisa tu correo</p>
+          <p className="text-white/50 text-sm leading-relaxed">
+            Enviamos un código de 6 dígitos a{' '}
+            <span className="text-rose-200/80">{email}</span>
+          </p>
+        </div>
+
+        <form onSubmit={handleVerifyOTP} className="flex flex-col gap-3">
+          <input
+            type="text"
+            inputMode="numeric"
+            maxLength={6}
+            value={otpCode}
+            onChange={e => setOtpCode(e.target.value.replace(/\D/g, ''))}
+            placeholder="000000"
+            required
+            autoFocus
+            className="w-full bg-white/5 border border-white/15 focus:border-rose-300/40 focus:bg-white/10 rounded-xl px-4 py-3 text-white/80 placeholder:text-white/20 text-center text-2xl tracking-[0.5em] outline-none transition-all duration-300"
+          />
+          <button
+            type="submit"
+            disabled={loading === 'verify' || otpCode.length < 6}
+            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-rose-400/30 to-purple-500/30 hover:from-rose-400/50 hover:to-purple-500/50 border border-rose-300/20 hover:border-rose-300/40 text-white/90 text-sm font-light tracking-wide transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {loading === 'verify' ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border border-white/40 border-t-white rounded-full animate-spin" />
+                Verificando...
+              </span>
+            ) : (
+              'Entrar ✦'
+            )}
+          </button>
+        </form>
+
+        {error && <p className="text-rose-300/70 text-xs text-center">{error}</p>}
+
+        <button
+          onClick={() => { setStep('initial'); setOtpCode(''); setError('') }}
+          className="text-white/25 text-xs hover:text-white/50 transition-colors text-center"
+        >
+          ← Volver
+        </button>
+      </div>
+    )
+  }
+
+  // ── Initial sign-in screen ──────────────────────────────────────
   return (
     <div className="glass-card w-full rounded-2xl px-8 py-8 flex flex-col gap-6">
-      {emailSent ? (
-        <div className="text-center flex flex-col gap-3 py-2">
-          <div className="text-3xl">✉️</div>
-          <p className="font-display text-white/90 text-lg font-normal">
-            Revisa tu correo
-          </p>
-          <p className="text-white/50 text-sm leading-relaxed">
-            Te enviamos un enlace mágico a{" "}
-            <span className="text-rose-200/80">{email}</span>.
-            Haz clic en él para entrar a tu espacio.
-          </p>
-          <button
-            onClick={() => { setEmailSent(false); setEmail("") }}
-            className="mt-2 text-white/30 text-xs hover:text-white/60 transition-colors"
-          >
-            Usar otro correo
-          </button>
-        </div>
-      ) : (
-        <>
-          <div className="text-center">
-            <p className="text-white/60 text-sm font-light tracking-wide">
-              Entra a tu espacio sagrado
-            </p>
-          </div>
+      <div className="text-center">
+        <p className="text-white/60 text-sm font-light tracking-wide">
+          Entra a tu espacio sagrado
+        </p>
+      </div>
 
-          {/* Google */}
-          <button
-            onClick={handleGoogle}
-            disabled={loading !== null}
-            className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white/90 text-sm font-light tracking-wide transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading === "google" ? (
+      {/* Google */}
+      <button
+        onClick={handleGoogle}
+        disabled={loading !== null}
+        className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white/90 text-sm font-light tracking-wide transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {loading === 'google' ? (
+          <span className="w-4 h-4 border border-white/40 border-t-white rounded-full animate-spin" />
+        ) : (
+          <GoogleIcon />
+        )}
+        Continuar con Google
+      </button>
+
+      {/* Divider */}
+      <div className="flex items-center gap-3">
+        <div className="flex-1 h-px bg-white/10" />
+        <span className="text-white/30 text-xs tracking-widest">o</span>
+        <div className="flex-1 h-px bg-white/10" />
+      </div>
+
+      {/* Email OTP */}
+      <form onSubmit={handleRequestOTP} className="flex flex-col gap-3">
+        <input
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="tu@correo.com"
+          required
+          disabled={loading !== null}
+          className="w-full bg-white/5 border border-white/15 focus:border-rose-300/40 focus:bg-white/10 rounded-xl px-4 py-3 text-white/80 placeholder:text-white/25 text-sm outline-none transition-all duration-300 disabled:opacity-50"
+        />
+        <button
+          type="submit"
+          disabled={loading !== null || !email}
+          className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-rose-400/30 to-purple-500/30 hover:from-rose-400/50 hover:to-purple-500/50 border border-rose-300/20 hover:border-rose-300/40 text-white/90 text-sm font-light tracking-wide transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          {loading === 'email' ? (
+            <span className="flex items-center justify-center gap-2">
               <span className="w-4 h-4 border border-white/40 border-t-white rounded-full animate-spin" />
-            ) : (
-              <GoogleIcon />
-            )}
-            Continuar con Google
-          </button>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-white/10" />
-            <span className="text-white/30 text-xs tracking-widest">o</span>
-            <div className="flex-1 h-px bg-white/10" />
-          </div>
-
-          {/* Email magic link */}
-          <form onSubmit={handleEmail} className="flex flex-col gap-3">
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="tu@correo.com"
-              required
-              disabled={loading !== null}
-              className="w-full bg-white/5 border border-white/15 focus:border-rose-300/40 focus:bg-white/10 rounded-xl px-4 py-3 text-white/80 placeholder:text-white/25 text-sm outline-none transition-all duration-300 disabled:opacity-50"
-            />
-            <button
-              type="submit"
-              disabled={loading !== null || !email}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-rose-400/30 to-purple-500/30 hover:from-rose-400/50 hover:to-purple-500/50 border border-rose-300/20 hover:border-rose-300/40 text-white/90 text-sm font-light tracking-wide transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {loading === "email" ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="w-4 h-4 border border-white/40 border-t-white rounded-full animate-spin" />
-                  Enviando...
-                </span>
-              ) : (
-                "Recibir enlace mágico ✦"
-              )}
-            </button>
-          </form>
-
-          {error && (
-            <p className="text-rose-300/70 text-xs text-center">{error}</p>
+              Enviando...
+            </span>
+          ) : (
+            'Recibir código ✦'
           )}
-        </>
-      )}
+        </button>
+      </form>
+
+      {error && <p className="text-rose-300/70 text-xs text-center">{error}</p>}
     </div>
   )
 }
