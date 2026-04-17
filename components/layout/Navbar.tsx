@@ -1,11 +1,12 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, Bell, MessageCircle, ChevronDown } from 'lucide-react'
+import { useSession, signOut } from 'next-auth/react'
+import { Search, Bell, MessageCircle, ChevronDown, LogOut } from 'lucide-react'
 import communityData from '@/content/community.json'
 
 const tabs = [
-  { label: 'Comunidad', href: '/' },
+  { label: 'Comunidad', href: '/community' },
   { label: 'Classroom', href: '/classroom' },
   { label: 'Calendario', href: '/calendar' },
   { label: 'Miembros', href: '/members' },
@@ -14,6 +15,7 @@ const tabs = [
 
 export default function Navbar() {
   const pathname = usePathname()
+  const { data: session } = useSession()
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -21,15 +23,11 @@ export default function Navbar() {
         {/* Top row */}
         <div className="flex items-center h-14 gap-3">
           {/* Community name */}
-          <Link href="/" className="flex items-center gap-2 flex-shrink-0 mr-2">
+          <Link href="/community" className="flex items-center gap-2 flex-shrink-0 mr-2">
             <div className="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-content-center overflow-hidden">
-              {communityData.logoImage ? (
-                <span className="text-white text-xs font-bold w-full h-full flex items-center justify-center">
-                  {communityData.name.charAt(0)}
-                </span>
-              ) : (
-                <span className="text-white text-xs font-bold">M</span>
-              )}
+              <span className="text-white text-xs font-bold w-full h-full flex items-center justify-center">
+                {communityData.name.charAt(0)}
+              </span>
             </div>
             <span className="font-semibold text-sm text-gray-900 leading-tight hidden sm:block">
               {communityData.name}
@@ -57,10 +55,26 @@ export default function Navbar() {
             <button className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 relative">
               <Bell size={20} />
             </button>
-            {/* Avatar */}
-            <div className="relative">
+
+            {/* Avatar + sign out */}
+            <div className="relative group">
               <div className="avatar w-9 h-9 cursor-pointer bg-brand-100 text-brand-600 text-sm font-semibold">
-                {communityData.owner.name.charAt(0)}
+                {session?.user?.name?.charAt(0) ?? communityData.owner.name.charAt(0)}
+              </div>
+              {/* Dropdown on hover */}
+              <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+                {session?.user?.email && (
+                  <div className="px-3 py-2 border-b border-gray-100">
+                    <p className="text-xs text-gray-500 truncate">{session.user.email}</p>
+                  </div>
+                )}
+                <button
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-gray-600 hover:text-red-500 hover:bg-red-50 rounded-b-xl transition-colors"
+                >
+                  <LogOut size={14} />
+                  Cerrar sesión
+                </button>
               </div>
             </div>
           </div>
@@ -69,7 +83,7 @@ export default function Navbar() {
         {/* Tab navigation */}
         <nav className="flex gap-6 overflow-x-auto no-scrollbar">
           {tabs.map((tab) => {
-            const isActive = tab.href === '/' ? pathname === '/' : pathname.startsWith(tab.href)
+            const isActive = pathname === tab.href || pathname.startsWith(tab.href + '/')
             return (
               <Link
                 key={tab.href}

@@ -1,54 +1,73 @@
-import Navbar from '@/components/layout/Navbar'
-import Sidebar from '@/components/layout/Sidebar'
-import PostCard from '@/components/community/PostCard'
-import CategoryFilter from '@/components/community/CategoryFilter'
-import postsData from '@/content/posts.json'
-import communityData from '@/content/community.json'
-import type { Post } from '@/lib/types'
+"use client"
 
-export default function CommunityPage() {
-  const posts = postsData as Post[]
-  const pinned = posts.filter(p => p.pinned)
-  const feed = posts.filter(p => !p.pinned)
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import SignInCard from "@/components/auth/SignInCard"
+
+export default function LandingPage() {
+  const { status } = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/community")
+    }
+  }, [status, router])
+
+  if (status === "loading" || status === "authenticated") {
+    return (
+      <div className="min-h-screen galaxy-bg flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+      </div>
+    )
+  }
 
   return (
-    <>
-      <Navbar />
-      <main className="max-w-6xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          {/* Feed */}
-          <div className="flex-1 min-w-0">
-            {/* Write a post bar */}
-            <div className="post-card p-4 mb-4 flex items-center gap-3">
-              <div className="avatar w-9 h-9 bg-brand-100 text-brand-600 text-sm font-semibold">
-                {communityData.owner.name.charAt(0)}
-              </div>
-              <button className="flex-1 text-left text-sm text-gray-400 bg-gray-50 rounded-lg px-4 py-2.5 hover:bg-gray-100 transition">
-                Escribe algo...
-              </button>
-            </div>
+    <div className="min-h-screen galaxy-bg relative overflow-hidden flex flex-col items-center justify-center px-4">
 
-            {/* Category filters */}
-            <CategoryFilter categories={communityData.categories} />
+      {/* Watercolor blobs */}
+      <div className="blob blob-purple" />
+      <div className="blob blob-teal" />
+      <div className="blob blob-rose" />
+      <div className="blob blob-gold" />
+      <div className="blob blob-violet" />
 
-            {/* Posts */}
-            <div className="space-y-3 mt-4">
-              {pinned.map(post => <PostCard key={post.id} post={post} />)}
-              {feed.map(post => <PostCard key={post.id} post={post} />)}
-              {posts.length === 0 && (
-                <div className="text-center py-16 text-gray-400">
-                  <div className="text-4xl mb-3">✨</div>
-                  <p className="font-medium">Aún no hay publicaciones</p>
-                  <p className="text-sm mt-1">¡Sé la primera en compartir algo!</p>
-                </div>
-              )}
-            </div>
-          </div>
+      {/* Star field */}
+      <div className="stars" aria-hidden="true" />
+      <div className="stars stars-2" aria-hidden="true" />
+      <div className="stars stars-3" aria-hidden="true" />
 
-          {/* Sidebar */}
-          <Sidebar />
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center gap-10 w-full max-w-md">
+
+        {/* Hero */}
+        <div className="text-center flex flex-col items-center gap-4">
+          <div className="text-5xl mb-2 select-none animate-float" aria-hidden="true">✦</div>
+          <h1 className="font-display text-4xl sm:text-5xl font-normal tracking-wide text-white/90 leading-tight">
+            Mi Alma
+            <br />
+            <span className="text-rose-200/80 italic">en el Universo</span>
+          </h1>
+          <p className="text-white/50 text-sm sm:text-base tracking-[0.2em] uppercase font-light">
+            Un espacio para despertar y transformar
+          </p>
         </div>
-      </main>
-    </>
+
+        {/* Decorative divider */}
+        <div className="flex items-center gap-3 w-full">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          <span className="text-white/30 text-xs tracking-widest">☽ ✦ ☾</span>
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        </div>
+
+        {/* Auth card */}
+        <SignInCard />
+
+        <p className="text-white/25 text-xs text-center tracking-wide">
+          Un espacio seguro · Solo por invitación
+        </p>
+      </div>
+    </div>
   )
 }
