@@ -18,7 +18,7 @@ export default function Sidebar() {
 
         <div className="p-4">
           <h2 className="font-display text-base font-semibold text-gray-900 leading-tight mb-1">{name}</h2>
-          <p className="text-xs text-gray-400 mb-3">skool.com/{communityData.url}</p>
+          <p className="text-xs text-body-muted mb-3">mialmauniverso.com/{communityData.url}</p>
           <p className="text-sm text-gray-600 mb-4">{tagline}</p>
 
           {/* Links */}

@@ -3,6 +3,9 @@ import { Playfair_Display, DM_Sans } from 'next/font/google'
 import './globals.css'
 import communityData from '@/content/community.json'
 import { AuthProvider } from '@/context/AuthContext'
+import { FlagsProvider } from '@/context/FlagsContext'
+import { ThemeProvider } from '@/context/ThemeContext'
+import { SettingsProvider } from '@/context/SettingsContext'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -21,13 +24,33 @@ export const metadata: Metadata = {
   description: communityData.description,
 }
 
+// Applied before React hydrates, so dark-mode users don't see a white flash.
+const themeNoFlash = `
+(function(){try{
+  var c = localStorage.getItem('alma-theme') || 'system';
+  var dark = c === 'dark' || (c === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  var r = document.documentElement;
+  r.dataset.theme = dark ? 'dark' : 'light';
+  if (dark) r.classList.add('dark');
+}catch(e){}})();
+`
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${playfair.variable} ${dmSans.variable}`}>
-      <body className="font-body bg-[#f8f7f5] text-gray-900 antialiased">
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeNoFlash }} />
+      </head>
+      <body className="font-body bg-surface-secondary text-body antialiased">
+        <ThemeProvider>
+          <AuthProvider>
+            <FlagsProvider>
+              <SettingsProvider>
+                {children}
+              </SettingsProvider>
+            </FlagsProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
