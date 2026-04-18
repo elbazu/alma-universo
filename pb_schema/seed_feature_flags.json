@@ -1,0 +1,7 @@
+[
+  { "key": "paywall_enabled",   "enabled": false, "description": "Master switch for course paywalls. When false, all courses are accessible to any logged-in user regardless of access_type/price." },
+  { "key": "stripe_enabled",    "enabled": false, "description": "Enables Stripe checkout + billing UI. When false, payment UI renders as preview/disabled." },
+  { "key": "analytics_enabled", "enabled": false, "description": "Enables dashboard analytics for admin. When false, dashboard shows placeholder stats." },
+  { "key": "chat_enabled",      "enabled": false, "description": "Enables 1:1 direct messaging between members." },
+  { "key": "affiliates_enabled","enabled": false, "description": "Enables affiliate tracking, payouts UI and links." }
+]

@@ -1,0 +1,297 @@
+[
+  {
+    "name": "courses",
+    "type": "base",
+    "system": false,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "fields": [
+      { "name": "title",        "type": "text",   "required": true,  "max": 120 },
+      { "name": "slug",         "type": "text",   "required": true,  "pattern": "^[a-z0-9-]+$" },
+      { "name": "tagline",      "type": "text",   "required": false, "max": 180 },
+      { "name": "description",  "type": "editor", "required": false },
+      { "name": "thumbnail",    "type": "file",   "required": false, "maxSelect": 1, "mimeTypes": ["image/png","image/jpeg","image/webp"] },
+      { "name": "cover_image",  "type": "file",   "required": false, "maxSelect": 1, "mimeTypes": ["image/png","image/jpeg","image/webp"] },
+      { "name": "access_type",  "type": "select", "required": true,  "maxSelect": 1, "values": ["free","paid"] },
+      { "name": "price_cents",  "type": "number", "required": false, "min": 0 },
+      { "name": "currency",     "type": "text",   "required": false, "max": 3 },
+      { "name": "billing",      "type": "select", "required": false, "maxSelect": 1, "values": ["one_time","monthly","yearly"] },
+      { "name": "is_published", "type": "bool",   "required": false },
+      { "name": "sort_order",   "type": "number", "required": false, "min": 0 }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX idx_courses_slug ON courses (slug)"
+    ]
+  },
+  {
+    "name": "enrollments",
+    "type": "base",
+    "system": false,
+    "listRule": "@request.auth.id = user.id",
+    "viewRule": "@request.auth.id = user.id",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "fields": [
+      { "name": "user",       "type": "relation", "required": true, "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": true },
+      { "name": "course",     "type": "relation", "required": true, "maxSelect": 1, "collectionId": "courses",         "cascadeDelete": true },
+      { "name": "status",     "type": "select",   "required": true, "maxSelect": 1, "values": ["active","cancelled","pending"] },
+      { "name": "enrolled_at","type": "date",     "required": false },
+      { "name": "expires_at", "type": "date",     "required": false },
+      { "name": "source",     "type": "select",   "required": false, "maxSelect": 1, "values": ["free","stripe","manual","promo"] }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX idx_enrollments_user_course ON enrollments (user, course)"
+    ]
+  },
+  {
+    "name": "categories",
+    "type": "base",
+    "system": false,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "fields": [
+      { "name": "name",       "type": "text",     "required": true, "max": 60 },
+      { "name": "slug",       "type": "text",     "required": true, "pattern": "^[a-z0-9-]+$" },
+      { "name": "emoji",      "type": "text",     "required": false, "max": 8 },
+      { "name": "description","type": "text",     "required": false, "max": 200 },
+      { "name": "course",     "type": "relation", "required": false, "maxSelect": 1, "collectionId": "courses", "cascadeDelete": true },
+      { "name": "sort_order", "type": "number",   "required": false, "min": 0 }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX idx_categories_slug_course ON categories (slug, course)"
+    ]
+  },
+  {
+    "name": "rules",
+    "type": "base",
+    "system": false,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "fields": [
+      { "name": "title",      "type": "text",     "required": true, "max": 120 },
+      { "name": "body",       "type": "editor",   "required": true },
+      { "name": "course",     "type": "relation", "required": false, "maxSelect": 1, "collectionId": "courses", "cascadeDelete": true },
+      { "name": "sort_order", "type": "number",   "required": false, "min": 0 }
+    ]
+  },
+  {
+    "name": "posts",
+    "type": "base",
+    "system": false,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "@request.auth.id != ''",
+    "updateRule": "@request.auth.id = author.id",
+    "deleteRule": "@request.auth.id = author.id",
+    "fields": [
+      { "name": "title",       "type": "text",     "required": true,  "max": 180 },
+      { "name": "content",     "type": "editor",   "required": false },
+      { "name": "author",      "type": "relation", "required": true,  "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": true },
+      { "name": "course",      "type": "relation", "required": false, "maxSelect": 1, "collectionId": "courses",         "cascadeDelete": true },
+      { "name": "category",    "type": "relation", "required": false, "maxSelect": 1, "collectionId": "categories",      "cascadeDelete": false },
+      { "name": "is_pinned",   "type": "bool",     "required": false },
+      { "name": "image",       "type": "file",     "required": false, "maxSelect": 1, "mimeTypes": ["image/png","image/jpeg","image/webp","image/gif"] },
+      { "name": "video_url",   "type": "url",      "required": false },
+      { "name": "like_count",  "type": "number",   "required": false, "min": 0 },
+      { "name": "comment_count","type": "number",  "required": false, "min": 0 }
+    ],
+    "indexes": [
+      "CREATE INDEX idx_posts_course_created ON posts (course, created)",
+      "CREATE INDEX idx_posts_category       ON posts (category)"
+    ]
+  },
+  {
+    "name": "comments",
+    "type": "base",
+    "system": false,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "@request.auth.id != ''",
+    "updateRule": "@request.auth.id = author.id",
+    "deleteRule": "@request.auth.id = author.id",
+    "fields": [
+      { "name": "post",   "type": "relation", "required": true,  "maxSelect": 1, "collectionId": "posts",            "cascadeDelete": true },
+      { "name": "author", "type": "relation", "required": true,  "maxSelect": 1, "collectionId": "_pb_users_auth_",  "cascadeDelete": true },
+      { "name": "parent", "type": "relation", "required": false, "maxSelect": 1, "collectionId": "comments",         "cascadeDelete": true },
+      { "name": "body",   "type": "text",     "required": true,  "max": 4000 }
+    ],
+    "indexes": [
+      "CREATE INDEX idx_comments_post ON comments (post, created)"
+    ]
+  },
+  {
+    "name": "reactions",
+    "type": "base",
+    "system": false,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "@request.auth.id = user.id",
+    "updateRule": null,
+    "deleteRule": "@request.auth.id = user.id",
+    "fields": [
+      { "name": "user",        "type": "relation", "required": true, "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": true },
+      { "name": "target_type", "type": "select",   "required": true, "maxSelect": 1, "values": ["post","comment"] },
+      { "name": "target_id",   "type": "text",     "required": true, "max": 60 },
+      { "name": "kind",        "type": "select",   "required": true, "maxSelect": 1, "values": ["like","heart","spark","hug"] }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX idx_reactions_unique ON reactions (user, target_type, target_id, kind)"
+    ]
+  },
+  {
+    "name": "notifications",
+    "type": "base",
+    "system": false,
+    "listRule": "@request.auth.id = user.id",
+    "viewRule": "@request.auth.id = user.id",
+    "createRule": null,
+    "updateRule": "@request.auth.id = user.id",
+    "deleteRule": "@request.auth.id = user.id",
+    "fields": [
+      { "name": "user",    "type": "relation", "required": true, "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": true },
+      { "name": "kind",    "type": "select",   "required": true, "maxSelect": 1, "values": ["comment","mention","reaction","enrollment","event","system"] },
+      { "name": "title",   "type": "text",     "required": true, "max": 180 },
+      { "name": "body",    "type": "text",     "required": false, "max": 500 },
+      { "name": "link",    "type": "text",     "required": false, "max": 300 },
+      { "name": "read_at", "type": "date",     "required": false }
+    ],
+    "indexes": [
+      "CREATE INDEX idx_notifications_user_read ON notifications (user, read_at)"
+    ]
+  },
+  {
+    "name": "chat_threads",
+    "type": "base",
+    "system": false,
+    "listRule": "@request.auth.id ?= participants.id",
+    "viewRule": "@request.auth.id ?= participants.id",
+    "createRule": "@request.auth.id != ''",
+    "updateRule": "@request.auth.id ?= participants.id",
+    "deleteRule": null,
+    "fields": [
+      { "name": "participants",   "type": "relation", "required": true, "maxSelect": 10, "collectionId": "_pb_users_auth_", "cascadeDelete": false },
+      { "name": "last_message",   "type": "text",     "required": false, "max": 500 },
+      { "name": "last_message_at","type": "date",     "required": false }
+    ]
+  },
+  {
+    "name": "chat_messages",
+    "type": "base",
+    "system": false,
+    "listRule": "@request.auth.id ?= thread.participants.id",
+    "viewRule": "@request.auth.id ?= thread.participants.id",
+    "createRule": "@request.auth.id = sender.id && @request.auth.id ?= thread.participants.id",
+    "updateRule": null,
+    "deleteRule": "@request.auth.id = sender.id",
+    "fields": [
+      { "name": "thread",  "type": "relation", "required": true, "maxSelect": 1, "collectionId": "chat_threads",     "cascadeDelete": true },
+      { "name": "sender",  "type": "relation", "required": true, "maxSelect": 1, "collectionId": "_pb_users_auth_",  "cascadeDelete": true },
+      { "name": "body",    "type": "text",     "required": true, "max": 4000 },
+      { "name": "read_by", "type": "relation", "required": false, "maxSelect": 20, "collectionId": "_pb_users_auth_", "cascadeDelete": false }
+    ],
+    "indexes": [
+      "CREATE INDEX idx_messages_thread_created ON chat_messages (thread, created)"
+    ]
+  },
+  {
+    "name": "user_preferences",
+    "type": "base",
+    "system": false,
+    "listRule": "@request.auth.id = user.id",
+    "viewRule": "@request.auth.id = user.id",
+    "createRule": "@request.auth.id = user.id",
+    "updateRule": "@request.auth.id = user.id",
+    "deleteRule": null,
+    "fields": [
+      { "name": "user",                  "type": "relation", "required": true,  "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": true },
+      { "name": "theme",                 "type": "select",   "required": false, "maxSelect": 1, "values": ["light","dark","system"] },
+      { "name": "active_course",         "type": "relation", "required": false, "maxSelect": 1, "collectionId": "courses",         "cascadeDelete": false },
+      { "name": "notify_comments",       "type": "bool",     "required": false },
+      { "name": "notify_mentions",       "type": "bool",     "required": false },
+      { "name": "notify_reactions",      "type": "bool",     "required": false },
+      { "name": "notify_events",         "type": "bool",     "required": false },
+      { "name": "email_digest_weekly",   "type": "bool",     "required": false },
+      { "name": "language",              "type": "select",   "required": false, "maxSelect": 1, "values": ["es","en"] },
+      { "name": "timezone",              "type": "text",     "required": false, "max": 64 }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX idx_user_preferences_user ON user_preferences (user)"
+    ]
+  },
+  {
+    "name": "payment_methods",
+    "type": "base",
+    "system": false,
+    "listRule": "@request.auth.id = user.id",
+    "viewRule": "@request.auth.id = user.id",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": "@request.auth.id = user.id",
+    "fields": [
+      { "name": "user",              "type": "relation", "required": true,  "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": true },
+      { "name": "provider",          "type": "select",   "required": true,  "maxSelect": 1, "values": ["stripe"] },
+      { "name": "provider_payment_id","type": "text",    "required": true,  "max": 120 },
+      { "name": "kind",              "type": "select",   "required": false, "maxSelect": 1, "values": ["card","link","apple_pay","google_pay"] },
+      { "name": "brand",             "type": "text",     "required": false, "max": 32 },
+      { "name": "last4",             "type": "text",     "required": false, "max": 4 },
+      { "name": "exp_month",         "type": "number",   "required": false, "min": 1, "max": 12 },
+      { "name": "exp_year",          "type": "number",   "required": false, "min": 2020, "max": 2100 },
+      { "name": "is_default",        "type": "bool",     "required": false }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX idx_payment_methods_provider_id ON payment_methods (provider, provider_payment_id)"
+    ]
+  },
+  {
+    "name": "transactions",
+    "type": "base",
+    "system": false,
+    "listRule": "@request.auth.id = user.id",
+    "viewRule": "@request.auth.id = user.id",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "fields": [
+      { "name": "user",              "type": "relation", "required": true,  "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": false },
+      { "name": "course",            "type": "relation", "required": false, "maxSelect": 1, "collectionId": "courses",         "cascadeDelete": false },
+      { "name": "amount_cents",      "type": "number",   "required": true,  "min": 0 },
+      { "name": "currency",          "type": "text",     "required": true,  "max": 3 },
+      { "name": "status",            "type": "select",   "required": true,  "maxSelect": 1, "values": ["pending","succeeded","failed","refunded"] },
+      { "name": "provider",          "type": "select",   "required": true,  "maxSelect": 1, "values": ["stripe","manual"] },
+      { "name": "provider_ref",      "type": "text",     "required": false, "max": 200 },
+      { "name": "description",       "type": "text",     "required": false, "max": 300 }
+    ],
+    "indexes": [
+      "CREATE INDEX idx_transactions_user_created ON transactions (user, created)"
+    ]
+  },
+  {
+    "name": "feature_flags",
+    "type": "base",
+    "system": false,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "fields": [
+      { "name": "key",         "type": "text",   "required": true, "pattern": "^[a-z0-9_]+$", "max": 80 },
+      { "name": "enabled",     "type": "bool",   "required": false },
+      { "name": "value",       "type": "json",   "required": false },
+      { "name": "description", "type": "text",   "required": false, "max": 300 }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX idx_feature_flags_key ON feature_flags (key)"
+    ]
+  }
+]
