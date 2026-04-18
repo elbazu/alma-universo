@@ -1,5 +1,6 @@
 [
   {
+    "id": "pbc_9466155966",
     "name": "courses",
     "type": "base",
     "system": false,
@@ -9,24 +10,212 @@
     "updateRule": null,
     "deleteRule": null,
     "fields": [
-      { "name": "title",        "type": "text",   "required": true,  "max": 120 },
-      { "name": "slug",         "type": "text",   "required": true,  "pattern": "^[a-z0-9-]+$" },
-      { "name": "tagline",      "type": "text",   "required": false, "max": 180 },
-      { "name": "description",  "type": "editor", "required": false },
-      { "name": "thumbnail",    "type": "file",   "required": false, "maxSelect": 1, "mimeTypes": ["image/png","image/jpeg","image/webp"] },
-      { "name": "cover_image",  "type": "file",   "required": false, "maxSelect": 1, "mimeTypes": ["image/png","image/jpeg","image/webp"] },
-      { "name": "access_type",  "type": "select", "required": true,  "maxSelect": 1, "values": ["free","paid"] },
-      { "name": "price_cents",  "type": "number", "required": false, "min": 0 },
-      { "name": "currency",     "type": "text",   "required": false, "max": 3 },
-      { "name": "billing",      "type": "select", "required": false, "maxSelect": 1, "values": ["one_time","monthly","yearly"] },
-      { "name": "is_published", "type": "bool",   "required": false },
-      { "name": "sort_order",   "type": "number", "required": false, "min": 0 }
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "title",
+        "id": "text4290169033",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 120,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "slug",
+        "id": "text3772073382",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 0,
+        "min": 0,
+        "pattern": "^[a-z0-9-]+$",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "tagline",
+        "id": "text5060355758",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 180,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "editor",
+        "name": "description",
+        "id": "editor6135342180",
+        "convertURLs": false,
+        "hidden": false,
+        "maxSize": 0,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "file",
+        "name": "thumbnail",
+        "id": "file698575342",
+        "hidden": false,
+        "maxSelect": 1,
+        "maxSize": 0,
+        "mimeTypes": [
+          "image/png",
+          "image/jpeg",
+          "image/webp"
+        ],
+        "protected": false,
+        "thumbs": null,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "file",
+        "name": "cover_image",
+        "id": "file5396387296",
+        "hidden": false,
+        "maxSelect": 1,
+        "maxSize": 0,
+        "mimeTypes": [
+          "image/png",
+          "image/jpeg",
+          "image/webp"
+        ],
+        "protected": false,
+        "thumbs": null,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "access_type",
+        "id": "select2887040939",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "free",
+          "paid"
+        ],
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "number",
+        "name": "price_cents",
+        "id": "number2251757570",
+        "hidden": false,
+        "max": null,
+        "min": 0,
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "currency",
+        "id": "text1381034612",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 3,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "billing",
+        "id": "select5689147180",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "one_time",
+          "monthly",
+          "yearly"
+        ],
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "is_published",
+        "id": "bool869379512",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "number",
+        "name": "sort_order",
+        "id": "number7373012550",
+        "hidden": false,
+        "max": null,
+        "min": 0,
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false
+      }
     ],
     "indexes": [
-      "CREATE UNIQUE INDEX idx_courses_slug ON courses (slug)"
+      "CREATE UNIQUE INDEX `idx_courses_slug` ON `courses` (`slug`)"
     ]
   },
   {
+    "id": "pbc_4913622936",
     "name": "enrollments",
     "type": "base",
     "system": false,
@@ -36,18 +225,126 @@
     "updateRule": null,
     "deleteRule": null,
     "fields": [
-      { "name": "user",       "type": "relation", "required": true, "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": true },
-      { "name": "course",     "type": "relation", "required": true, "maxSelect": 1, "collectionId": "courses",         "cascadeDelete": true },
-      { "name": "status",     "type": "select",   "required": true, "maxSelect": 1, "values": ["active","cancelled","pending"] },
-      { "name": "enrolled_at","type": "date",     "required": false },
-      { "name": "expires_at", "type": "date",     "required": false },
-      { "name": "source",     "type": "select",   "required": false, "maxSelect": 1, "values": ["free","stripe","manual","promo"] }
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "user",
+        "id": "rel9752515505",
+        "hidden": false,
+        "collectionId": "_pb_users_auth_",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "course",
+        "id": "rel5954025444",
+        "hidden": false,
+        "collectionId": "pbc_9466155966",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "status",
+        "id": "select991175917",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "active",
+          "cancelled",
+          "pending"
+        ],
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "date",
+        "name": "enrolled_at",
+        "id": "date3606493399",
+        "hidden": false,
+        "max": "",
+        "min": "",
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "date",
+        "name": "expires_at",
+        "id": "date7597008204",
+        "hidden": false,
+        "max": "",
+        "min": "",
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "source",
+        "id": "select552153223",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "free",
+          "stripe",
+          "manual",
+          "promo"
+        ],
+        "presentable": false,
+        "required": false,
+        "system": false
+      }
     ],
     "indexes": [
-      "CREATE UNIQUE INDEX idx_enrollments_user_course ON enrollments (user, course)"
+      "CREATE UNIQUE INDEX `idx_enrollments_user_course` ON `enrollments` (`user`, `course`)"
     ]
   },
   {
+    "id": "pbc_7632890611",
     "name": "categories",
     "type": "base",
     "system": false,
@@ -57,18 +354,128 @@
     "updateRule": null,
     "deleteRule": null,
     "fields": [
-      { "name": "name",       "type": "text",     "required": true, "max": 60 },
-      { "name": "slug",       "type": "text",     "required": true, "pattern": "^[a-z0-9-]+$" },
-      { "name": "emoji",      "type": "text",     "required": false, "max": 8 },
-      { "name": "description","type": "text",     "required": false, "max": 200 },
-      { "name": "course",     "type": "relation", "required": false, "maxSelect": 1, "collectionId": "courses", "cascadeDelete": true },
-      { "name": "sort_order", "type": "number",   "required": false, "min": 0 }
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "name",
+        "id": "text692880445",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 60,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "slug",
+        "id": "text4984368568",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 0,
+        "min": 0,
+        "pattern": "^[a-z0-9-]+$",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "emoji",
+        "id": "text1099029269",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 8,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "description",
+        "id": "text1334236782",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 200,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "course",
+        "id": "rel6006655195",
+        "hidden": false,
+        "collectionId": "pbc_9466155966",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "number",
+        "name": "sort_order",
+        "id": "number3962297346",
+        "hidden": false,
+        "max": null,
+        "min": 0,
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false
+      }
     ],
     "indexes": [
-      "CREATE UNIQUE INDEX idx_categories_slug_course ON categories (slug, course)"
+      "CREATE UNIQUE INDEX `idx_categories_slug_course` ON `categories` (`slug`, `course`)"
     ]
   },
   {
+    "id": "pbc_7737513855",
     "name": "rules",
     "type": "base",
     "system": false,
@@ -78,13 +485,95 @@
     "updateRule": null,
     "deleteRule": null,
     "fields": [
-      { "name": "title",      "type": "text",     "required": true, "max": 120 },
-      { "name": "body",       "type": "editor",   "required": true },
-      { "name": "course",     "type": "relation", "required": false, "maxSelect": 1, "collectionId": "courses", "cascadeDelete": true },
-      { "name": "sort_order", "type": "number",   "required": false, "min": 0 }
-    ]
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "title",
+        "id": "text5855342871",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 120,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "editor",
+        "name": "body",
+        "id": "editor4397525756",
+        "convertURLs": false,
+        "hidden": false,
+        "maxSize": 0,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "course",
+        "id": "rel9284879888",
+        "hidden": false,
+        "collectionId": "pbc_9466155966",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "number",
+        "name": "sort_order",
+        "id": "number9336358018",
+        "hidden": false,
+        "max": null,
+        "min": 0,
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false
+      }
+    ],
+    "indexes": []
   },
   {
+    "id": "pbc_7932960951",
     "name": "posts",
     "type": "base",
     "system": false,
@@ -94,23 +583,175 @@
     "updateRule": "@request.auth.id = author.id",
     "deleteRule": "@request.auth.id = author.id",
     "fields": [
-      { "name": "title",       "type": "text",     "required": true,  "max": 180 },
-      { "name": "content",     "type": "editor",   "required": false },
-      { "name": "author",      "type": "relation", "required": true,  "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": true },
-      { "name": "course",      "type": "relation", "required": false, "maxSelect": 1, "collectionId": "courses",         "cascadeDelete": true },
-      { "name": "category",    "type": "relation", "required": false, "maxSelect": 1, "collectionId": "categories",      "cascadeDelete": false },
-      { "name": "is_pinned",   "type": "bool",     "required": false },
-      { "name": "image",       "type": "file",     "required": false, "maxSelect": 1, "mimeTypes": ["image/png","image/jpeg","image/webp","image/gif"] },
-      { "name": "video_url",   "type": "url",      "required": false },
-      { "name": "like_count",  "type": "number",   "required": false, "min": 0 },
-      { "name": "comment_count","type": "number",  "required": false, "min": 0 }
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "title",
+        "id": "text1194794713",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 180,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "editor",
+        "name": "content",
+        "id": "editor5684658361",
+        "convertURLs": false,
+        "hidden": false,
+        "maxSize": 0,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "author",
+        "id": "rel2337000478",
+        "hidden": false,
+        "collectionId": "_pb_users_auth_",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "course",
+        "id": "rel3537523330",
+        "hidden": false,
+        "collectionId": "pbc_9466155966",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "category",
+        "id": "rel4587005394",
+        "hidden": false,
+        "collectionId": "pbc_7632890611",
+        "cascadeDelete": false,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "is_pinned",
+        "id": "bool5837857511",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "file",
+        "name": "image",
+        "id": "file2343334562",
+        "hidden": false,
+        "maxSelect": 1,
+        "maxSize": 0,
+        "mimeTypes": [
+          "image/png",
+          "image/jpeg",
+          "image/webp",
+          "image/gif"
+        ],
+        "protected": false,
+        "thumbs": null,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "url",
+        "name": "video_url",
+        "id": "url5553402951",
+        "exceptDomains": null,
+        "onlyDomains": null,
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "number",
+        "name": "like_count",
+        "id": "number933359137",
+        "hidden": false,
+        "max": null,
+        "min": 0,
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "number",
+        "name": "comment_count",
+        "id": "number9355382002",
+        "hidden": false,
+        "max": null,
+        "min": 0,
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false
+      }
     ],
     "indexes": [
-      "CREATE INDEX idx_posts_course_created ON posts (course, created)",
-      "CREATE INDEX idx_posts_category       ON posts (category)"
+      "CREATE INDEX `idx_posts_course_created` ON `posts` (`course`, `created`)",
+      "CREATE INDEX `idx_posts_category` ON `posts` (`category`)"
     ]
   },
   {
+    "id": "pbc_4020653089",
     "name": "comments",
     "type": "base",
     "system": false,
@@ -120,16 +761,100 @@
     "updateRule": "@request.auth.id = author.id",
     "deleteRule": "@request.auth.id = author.id",
     "fields": [
-      { "name": "post",   "type": "relation", "required": true,  "maxSelect": 1, "collectionId": "posts",            "cascadeDelete": true },
-      { "name": "author", "type": "relation", "required": true,  "maxSelect": 1, "collectionId": "_pb_users_auth_",  "cascadeDelete": true },
-      { "name": "parent", "type": "relation", "required": false, "maxSelect": 1, "collectionId": "comments",         "cascadeDelete": true },
-      { "name": "body",   "type": "text",     "required": true,  "max": 4000 }
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "post",
+        "id": "rel864738144",
+        "hidden": false,
+        "collectionId": "pbc_7932960951",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "author",
+        "id": "rel8042737265",
+        "hidden": false,
+        "collectionId": "_pb_users_auth_",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "parent",
+        "id": "rel7822067968",
+        "hidden": false,
+        "collectionId": "pbc_4020653089",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "body",
+        "id": "text558913638",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 4000,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      }
     ],
     "indexes": [
-      "CREATE INDEX idx_comments_post ON comments (post, created)"
+      "CREATE INDEX `idx_comments_post` ON `comments` (`post`, `created`)"
     ]
   },
   {
+    "id": "pbc_3973427011",
     "name": "reactions",
     "type": "base",
     "system": false,
@@ -139,16 +864,104 @@
     "updateRule": null,
     "deleteRule": "@request.auth.id = user.id",
     "fields": [
-      { "name": "user",        "type": "relation", "required": true, "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": true },
-      { "name": "target_type", "type": "select",   "required": true, "maxSelect": 1, "values": ["post","comment"] },
-      { "name": "target_id",   "type": "text",     "required": true, "max": 60 },
-      { "name": "kind",        "type": "select",   "required": true, "maxSelect": 1, "values": ["like","heart","spark","hug"] }
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "user",
+        "id": "rel5299384434",
+        "hidden": false,
+        "collectionId": "_pb_users_auth_",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "target_type",
+        "id": "select4502086308",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "post",
+          "comment"
+        ],
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "target_id",
+        "id": "text3697527573",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 60,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "kind",
+        "id": "select561435044",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "like",
+          "heart",
+          "spark",
+          "hug"
+        ],
+        "presentable": false,
+        "required": true,
+        "system": false
+      }
     ],
     "indexes": [
-      "CREATE UNIQUE INDEX idx_reactions_unique ON reactions (user, target_type, target_id, kind)"
+      "CREATE UNIQUE INDEX `idx_reactions_unique` ON `reactions` (`user`, `target_type`, `target_id`, `kind`)"
     ]
   },
   {
+    "id": "pbc_8756983352",
     "name": "notifications",
     "type": "base",
     "system": false,
@@ -158,18 +971,131 @@
     "updateRule": "@request.auth.id = user.id",
     "deleteRule": "@request.auth.id = user.id",
     "fields": [
-      { "name": "user",    "type": "relation", "required": true, "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": true },
-      { "name": "kind",    "type": "select",   "required": true, "maxSelect": 1, "values": ["comment","mention","reaction","enrollment","event","system"] },
-      { "name": "title",   "type": "text",     "required": true, "max": 180 },
-      { "name": "body",    "type": "text",     "required": false, "max": 500 },
-      { "name": "link",    "type": "text",     "required": false, "max": 300 },
-      { "name": "read_at", "type": "date",     "required": false }
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "user",
+        "id": "rel3107089396",
+        "hidden": false,
+        "collectionId": "_pb_users_auth_",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "kind",
+        "id": "select4641749656",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "comment",
+          "mention",
+          "reaction",
+          "enrollment",
+          "event",
+          "system"
+        ],
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "title",
+        "id": "text1424163433",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 180,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "body",
+        "id": "text8653005198",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 500,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "link",
+        "id": "text3276071835",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 300,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "date",
+        "name": "read_at",
+        "id": "date2732140603",
+        "hidden": false,
+        "max": "",
+        "min": "",
+        "presentable": false,
+        "required": false,
+        "system": false
+      }
     ],
     "indexes": [
-      "CREATE INDEX idx_notifications_user_read ON notifications (user, read_at)"
+      "CREATE INDEX `idx_notifications_user_read` ON `notifications` (`user`, `read_at`)"
     ]
   },
   {
+    "id": "pbc_1439548262",
     "name": "chat_threads",
     "type": "base",
     "system": false,
@@ -179,12 +1105,83 @@
     "updateRule": "@request.auth.id ?= participants.id",
     "deleteRule": null,
     "fields": [
-      { "name": "participants",   "type": "relation", "required": true, "maxSelect": 10, "collectionId": "_pb_users_auth_", "cascadeDelete": false },
-      { "name": "last_message",   "type": "text",     "required": false, "max": 500 },
-      { "name": "last_message_at","type": "date",     "required": false }
-    ]
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "participants",
+        "id": "rel2624429519",
+        "hidden": false,
+        "collectionId": "_pb_users_auth_",
+        "cascadeDelete": false,
+        "maxSelect": 10,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "last_message",
+        "id": "text8382596798",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 500,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "date",
+        "name": "last_message_at",
+        "id": "date2349360976",
+        "hidden": false,
+        "max": "",
+        "min": "",
+        "presentable": false,
+        "required": false,
+        "system": false
+      }
+    ],
+    "indexes": []
   },
   {
+    "id": "pbc_8701687825",
     "name": "chat_messages",
     "type": "base",
     "system": false,
@@ -194,16 +1191,100 @@
     "updateRule": null,
     "deleteRule": "@request.auth.id = sender.id",
     "fields": [
-      { "name": "thread",  "type": "relation", "required": true, "maxSelect": 1, "collectionId": "chat_threads",     "cascadeDelete": true },
-      { "name": "sender",  "type": "relation", "required": true, "maxSelect": 1, "collectionId": "_pb_users_auth_",  "cascadeDelete": true },
-      { "name": "body",    "type": "text",     "required": true, "max": 4000 },
-      { "name": "read_by", "type": "relation", "required": false, "maxSelect": 20, "collectionId": "_pb_users_auth_", "cascadeDelete": false }
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "thread",
+        "id": "rel7757582796",
+        "hidden": false,
+        "collectionId": "pbc_1439548262",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "sender",
+        "id": "rel1141480429",
+        "hidden": false,
+        "collectionId": "_pb_users_auth_",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "body",
+        "id": "text2709925539",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 4000,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "read_by",
+        "id": "rel7945549481",
+        "hidden": false,
+        "collectionId": "_pb_users_auth_",
+        "cascadeDelete": false,
+        "maxSelect": 20,
+        "minSelect": null,
+        "presentable": false,
+        "required": false,
+        "system": false
+      }
     ],
     "indexes": [
-      "CREATE INDEX idx_messages_thread_created ON chat_messages (thread, created)"
+      "CREATE INDEX `idx_messages_thread_created` ON `chat_messages` (`thread`, `created`)"
     ]
   },
   {
+    "id": "pbc_1815068056",
     "name": "user_preferences",
     "type": "base",
     "system": false,
@@ -213,22 +1294,161 @@
     "updateRule": "@request.auth.id = user.id",
     "deleteRule": null,
     "fields": [
-      { "name": "user",                  "type": "relation", "required": true,  "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": true },
-      { "name": "theme",                 "type": "select",   "required": false, "maxSelect": 1, "values": ["light","dark","system"] },
-      { "name": "active_course",         "type": "relation", "required": false, "maxSelect": 1, "collectionId": "courses",         "cascadeDelete": false },
-      { "name": "notify_comments",       "type": "bool",     "required": false },
-      { "name": "notify_mentions",       "type": "bool",     "required": false },
-      { "name": "notify_reactions",      "type": "bool",     "required": false },
-      { "name": "notify_events",         "type": "bool",     "required": false },
-      { "name": "email_digest_weekly",   "type": "bool",     "required": false },
-      { "name": "language",              "type": "select",   "required": false, "maxSelect": 1, "values": ["es","en"] },
-      { "name": "timezone",              "type": "text",     "required": false, "max": 64 }
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "user",
+        "id": "rel7756655635",
+        "hidden": false,
+        "collectionId": "_pb_users_auth_",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "theme",
+        "id": "select8823523149",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "light",
+          "dark",
+          "system"
+        ],
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "active_course",
+        "id": "rel2253609998",
+        "hidden": false,
+        "collectionId": "pbc_9466155966",
+        "cascadeDelete": false,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "notify_comments",
+        "id": "bool5725766571",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "notify_mentions",
+        "id": "bool2062461329",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "notify_reactions",
+        "id": "bool5894709608",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "notify_events",
+        "id": "bool2729029397",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "email_digest_weekly",
+        "id": "bool217640347",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "language",
+        "id": "select5904150806",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "es",
+          "en"
+        ],
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "timezone",
+        "id": "text5843415441",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 64,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      }
     ],
     "indexes": [
-      "CREATE UNIQUE INDEX idx_user_preferences_user ON user_preferences (user)"
+      "CREATE UNIQUE INDEX `idx_user_preferences_user` ON `user_preferences` (`user`)"
     ]
   },
   {
+    "id": "pbc_8504515613",
     "name": "payment_methods",
     "type": "base",
     "system": false,
@@ -238,21 +1458,164 @@
     "updateRule": null,
     "deleteRule": "@request.auth.id = user.id",
     "fields": [
-      { "name": "user",              "type": "relation", "required": true,  "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": true },
-      { "name": "provider",          "type": "select",   "required": true,  "maxSelect": 1, "values": ["stripe"] },
-      { "name": "provider_payment_id","type": "text",    "required": true,  "max": 120 },
-      { "name": "kind",              "type": "select",   "required": false, "maxSelect": 1, "values": ["card","link","apple_pay","google_pay"] },
-      { "name": "brand",             "type": "text",     "required": false, "max": 32 },
-      { "name": "last4",             "type": "text",     "required": false, "max": 4 },
-      { "name": "exp_month",         "type": "number",   "required": false, "min": 1, "max": 12 },
-      { "name": "exp_year",          "type": "number",   "required": false, "min": 2020, "max": 2100 },
-      { "name": "is_default",        "type": "bool",     "required": false }
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "user",
+        "id": "rel7607170408",
+        "hidden": false,
+        "collectionId": "_pb_users_auth_",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "provider",
+        "id": "select8360031591",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "stripe"
+        ],
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "provider_payment_id",
+        "id": "text6258052721",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 120,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "kind",
+        "id": "select5985520439",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "card",
+          "link",
+          "apple_pay",
+          "google_pay"
+        ],
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "brand",
+        "id": "text2415271905",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 32,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "last4",
+        "id": "text7593292680",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 4,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "number",
+        "name": "exp_month",
+        "id": "number4661979725",
+        "hidden": false,
+        "max": 12,
+        "min": 1,
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "number",
+        "name": "exp_year",
+        "id": "number825239587",
+        "hidden": false,
+        "max": 2100,
+        "min": 2020,
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "is_default",
+        "id": "bool6220233347",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      }
     ],
     "indexes": [
-      "CREATE UNIQUE INDEX idx_payment_methods_provider_id ON payment_methods (provider, provider_payment_id)"
+      "CREATE UNIQUE INDEX `idx_payment_methods_provider_id` ON `payment_methods` (`provider`, `provider_payment_id`)"
     ]
   },
   {
+    "id": "pbc_8596494045",
     "name": "transactions",
     "type": "base",
     "system": false,
@@ -262,20 +1625,157 @@
     "updateRule": null,
     "deleteRule": null,
     "fields": [
-      { "name": "user",              "type": "relation", "required": true,  "maxSelect": 1, "collectionId": "_pb_users_auth_", "cascadeDelete": false },
-      { "name": "course",            "type": "relation", "required": false, "maxSelect": 1, "collectionId": "courses",         "cascadeDelete": false },
-      { "name": "amount_cents",      "type": "number",   "required": true,  "min": 0 },
-      { "name": "currency",          "type": "text",     "required": true,  "max": 3 },
-      { "name": "status",            "type": "select",   "required": true,  "maxSelect": 1, "values": ["pending","succeeded","failed","refunded"] },
-      { "name": "provider",          "type": "select",   "required": true,  "maxSelect": 1, "values": ["stripe","manual"] },
-      { "name": "provider_ref",      "type": "text",     "required": false, "max": 200 },
-      { "name": "description",       "type": "text",     "required": false, "max": 300 }
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "user",
+        "id": "rel9943808147",
+        "hidden": false,
+        "collectionId": "_pb_users_auth_",
+        "cascadeDelete": false,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "course",
+        "id": "rel2519850199",
+        "hidden": false,
+        "collectionId": "pbc_9466155966",
+        "cascadeDelete": false,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "number",
+        "name": "amount_cents",
+        "id": "number305499626",
+        "hidden": false,
+        "max": null,
+        "min": 0,
+        "onlyInt": true,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "currency",
+        "id": "text8227132199",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 3,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "status",
+        "id": "select3100315567",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "pending",
+          "succeeded",
+          "failed",
+          "refunded"
+        ],
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "provider",
+        "id": "select7060539093",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "stripe",
+          "manual"
+        ],
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "provider_ref",
+        "id": "text7913196464",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 200,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "description",
+        "id": "text9506564716",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 300,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      }
     ],
     "indexes": [
-      "CREATE INDEX idx_transactions_user_created ON transactions (user, created)"
+      "CREATE INDEX `idx_transactions_user_created` ON `transactions` (`user`, `created`)"
     ]
   },
   {
+    "id": "pbc_1413859895",
     "name": "feature_flags",
     "type": "base",
     "system": false,
@@ -285,13 +1785,90 @@
     "updateRule": null,
     "deleteRule": null,
     "fields": [
-      { "name": "key",         "type": "text",   "required": true, "pattern": "^[a-z0-9_]+$", "max": 80 },
-      { "name": "enabled",     "type": "bool",   "required": false },
-      { "name": "value",       "type": "json",   "required": false },
-      { "name": "description", "type": "text",   "required": false, "max": 300 }
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "key",
+        "id": "text8320087816",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 80,
+        "min": 0,
+        "pattern": "^[a-z0-9_]+$",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "enabled",
+        "id": "bool9117901911",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "json",
+        "name": "value",
+        "id": "json4557226122",
+        "hidden": false,
+        "maxSize": 0,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "description",
+        "id": "text6304589830",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 300,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      }
     ],
     "indexes": [
-      "CREATE UNIQUE INDEX idx_feature_flags_key ON feature_flags (key)"
+      "CREATE UNIQUE INDEX `idx_feature_flags_key` ON `feature_flags` (`key`)"
     ]
   }
 ]
