@@ -6,6 +6,8 @@ import { AuthProvider } from '@/context/AuthContext'
 import { FlagsProvider } from '@/context/FlagsContext'
 import { ThemeProvider } from '@/context/ThemeContext'
 import { SettingsProvider } from '@/context/SettingsContext'
+import { CommunityDataProvider } from '@/context/CommunityDataContext'
+import { CommunitySettingsProvider } from '@/context/CommunitySettingsContext'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -45,9 +47,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider>
           <AuthProvider>
             <FlagsProvider>
-              <SettingsProvider>
-                {children}
-              </SettingsProvider>
+              <CommunityDataProvider>
+                <SettingsProvider>
+                  <CommunitySettingsProvider>
+                    {children}
+                  </CommunitySettingsProvider>
+                </SettingsProvider>
+              </CommunityDataProvider>
             </FlagsProvider>
           </AuthProvider>
         </ThemeProvider>

@@ -15,12 +15,20 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  { key: 'profile',       label: 'Profile',       icon: <User size={16} /> },
-  { key: 'appearance',    label: 'Appearance',    icon: <Palette size={16} /> },
-  { key: 'notifications', label: 'Notifications', icon: <Bell size={16} /> },
-  { key: 'billing',       label: 'Billing',       icon: <CreditCard size={16} />, flag: 'stripe_enabled' },
-  { key: 'account',       label: 'Account',       icon: <Shield size={16} /> },
+  { key: 'profile',       label: 'Perfil',         icon: <User size={16} /> },
+  { key: 'appearance',    label: 'Apariencia',     icon: <Palette size={16} /> },
+  { key: 'notifications', label: 'Notificaciones', icon: <Bell size={16} /> },
+  { key: 'billing',       label: 'Facturación',    icon: <CreditCard size={16} />, flag: 'stripe_enabled' },
+  { key: 'account',       label: 'Cuenta',         icon: <Shield size={16} /> },
 ]
+
+const PANE_TITLES: Record<PaneKey, string> = {
+  profile:       'Perfil',
+  appearance:    'Apariencia',
+  notifications: 'Notificaciones',
+  billing:       'Facturación',
+  account:       'Cuenta',
+}
 
 interface Props {
   open: boolean
@@ -57,7 +65,7 @@ export default function SettingsModal({ open, onClose, initialPane = 'profile' }
         {/* Left nav */}
         <aside className="w-56 bg-surface-secondary border-r border-border flex flex-col">
           <div className="px-4 h-12 flex items-center justify-between border-b border-border">
-            <h2 className="text-sm font-semibold">Settings</h2>
+            <h2 className="text-sm font-semibold">Configuración</h2>
           </div>
           <nav className="flex-1 p-2 space-y-0.5">
             {visibleNav.map(item => (
@@ -81,11 +89,11 @@ export default function SettingsModal({ open, onClose, initialPane = 'profile' }
         {/* Content pane */}
         <section className="flex-1 flex flex-col">
           <header className="h-12 px-5 flex items-center justify-between border-b border-border">
-            <h3 className="text-sm font-semibold capitalize">{pane}</h3>
+            <h3 className="text-sm font-semibold">{PANE_TITLES[pane]}</h3>
             <button
               onClick={onClose}
               className="p-1.5 rounded-lg hover:bg-surface-secondary text-body-muted hover:text-body transition"
-              aria-label="Close"
+              aria-label="Cerrar"
             >
               <X size={16} />
             </button>
@@ -103,7 +111,7 @@ export default function SettingsModal({ open, onClose, initialPane = 'profile' }
   )
 }
 
-/* ─── Panes ─────────────────────────────────────────── */
+/* ─── Paneles ───────────────────────────────────────── */
 
 function Placeholder({ title, body }: { title: string; body: string }) {
   return (
@@ -115,20 +123,25 @@ function Placeholder({ title, body }: { title: string; body: string }) {
 }
 
 function ProfilePane() {
-  return <Placeholder title="Your profile" body="Name, avatar, and bio editing will live here once the profile UI is built." />
+  return (
+    <Placeholder
+      title="Tu perfil"
+      body="Aquí vas a poder editar tu nombre, foto y biografía cuando el perfil esté conectado (Sprint 4)."
+    />
+  )
 }
 
 function AppearancePane() {
   const { choice, setChoice } = useTheme()
   const options: { key: ThemeChoice; label: string; description: string }[] = [
-    { key: 'light',  label: 'Light',  description: 'Cream and terracotta — the daytime feel.' },
-    { key: 'dark',   label: 'Dark',   description: 'Warm blacks with soft amber accents.' },
-    { key: 'system', label: 'System', description: 'Follow your device automatically.' },
+    { key: 'light',  label: 'Claro',      description: 'Crema y terracota — la sensación de día.' },
+    { key: 'dark',   label: 'Oscuro',     description: 'Negros cálidos con acentos ámbar suaves.' },
+    { key: 'system', label: 'Del sistema', description: 'Sigue la preferencia de tu dispositivo automáticamente.' },
   ]
   return (
     <div className="max-w-md">
-      <h4 className="font-display text-xl mb-1">Theme</h4>
-      <p className="text-sm text-body-secondary mb-4">Choose how the hub looks. Your choice is saved on this device.</p>
+      <h4 className="font-display text-xl mb-1">Tema</h4>
+      <p className="text-sm text-body-secondary mb-4">Elegí cómo se ve el hub. Tu elección se guarda en este dispositivo.</p>
       <div className="space-y-2">
         {options.map(opt => (
           <button
@@ -143,7 +156,7 @@ function AppearancePane() {
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">{opt.label}</span>
               {choice === opt.key && (
-                <span className="text-xs text-brand-600 font-semibold">Active</span>
+                <span className="text-xs text-brand-600 font-semibold">Activo</span>
               )}
             </div>
             <p className="text-xs text-body-secondary mt-0.5">{opt.description}</p>
@@ -155,26 +168,41 @@ function AppearancePane() {
 }
 
 function NotificationsPane() {
-  return <Placeholder title="Notifications" body="Pick what you want to be notified about — comments, mentions, reactions, events. Wiring to PocketBase user_preferences lands in Sprint 1." />
+  return (
+    <Placeholder
+      title="Notificaciones"
+      body="Elegí sobre qué querés recibir aviso — comentarios, menciones, reacciones, eventos. El cableado a la colección user_preferences llega en Sprint 5."
+    />
+  )
 }
 
 function BillingPane({ enabled }: { enabled: boolean }) {
   if (!enabled) {
     return (
       <div className="max-w-md">
-        <h4 className="font-display text-xl mb-1">Billing</h4>
+        <h4 className="font-display text-xl mb-1">Facturación</h4>
         <p className="text-sm text-body-secondary mb-4">
-          Billing is currently off — the beta is free for everyone. When paid courses launch, your saved payment methods and invoices will appear here.
+          La facturación está apagada — durante la beta todo es gratis. Cuando se lancen los cursos pagos, acá vas a ver tus métodos de pago guardados y tus facturas.
         </p>
         <div className="rounded-lg border border-dashed border-border p-4 text-sm text-body-muted">
-          No payment methods on file yet.
+          Todavía no hay métodos de pago registrados.
         </div>
       </div>
     )
   }
-  return <Placeholder title="Billing" body="Stripe-backed payment methods, invoices, and subscriptions will render here." />
+  return (
+    <Placeholder
+      title="Facturación"
+      body="Aquí van a aparecer los métodos de pago, las facturas y las suscripciones manejadas con Stripe."
+    />
+  )
 }
 
 function AccountPane() {
-  return <Placeholder title="Account" body="Email, password/magic-link, two-factor, and data export tools will live here." />
+  return (
+    <Placeholder
+      title="Cuenta"
+      body="Email, contraseña / magic-link, autenticación en dos pasos y exportación de datos se configuran acá (Sprint 4)."
+    />
+  )
 }

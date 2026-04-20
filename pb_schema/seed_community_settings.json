@@ -1,0 +1,13 @@
+{
+  "singleton_key": "main",
+  "name": "Mi Alma en el Universo",
+  "description": "Un espacio para conectar cuerpo, mente y espíritu — cursos, meditaciones y comunidad.",
+  "url_slug": "mi-alma",
+  "is_public": true,
+  "support_email": "zuniga.elba@gmail.com",
+  "show_classroom_tab": true,
+  "show_calendar_tab": true,
+  "show_map_tab": false,
+  "show_members_tab": true,
+  "show_about_tab": true
+}

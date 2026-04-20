@@ -1,25 +1,34 @@
-import Link from 'next/link'
+'use client'
+
 import { ExternalLink } from 'lucide-react'
 import communityData from '@/content/community.json'
+import { useCommunitySettings } from '@/context/CommunityDataContext'
 
 export default function Sidebar() {
-  const { name, tagline, coverImage, stats, links, owner } = communityData
+  const community = useCommunitySettings()
+  // Fields not yet in PocketBase still come from the JSON seed:
+  const { stats, links, owner, tagline } = communityData
 
   return (
     <aside className="space-y-4 sidebar-hide w-72 flex-shrink-0">
       {/* Group card */}
       <div className="sidebar-card">
         {/* Cover image */}
-        <div className="h-24 bg-gradient-to-br from-brand-400 to-brand-600 relative">
-          <div className="absolute inset-0 opacity-20"
-            style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px)', backgroundSize: '20px 20px' }}
-          />
+        <div className="h-24 bg-gradient-to-br from-brand-400 to-brand-600 relative overflow-hidden">
+          {community.cover_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={community.cover_url} alt="Cover" className="absolute inset-0 w-full h-full object-cover" />
+          ) : (
+            <div className="absolute inset-0 opacity-20"
+              style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px)', backgroundSize: '20px 20px' }}
+            />
+          )}
         </div>
 
         <div className="p-4">
-          <h2 className="font-display text-base font-semibold text-gray-900 leading-tight mb-1">{name}</h2>
-          <p className="text-xs text-body-muted mb-3">mialmauniverso.com/{communityData.url}</p>
-          <p className="text-sm text-gray-600 mb-4">{tagline}</p>
+          <h2 className="font-display text-base font-semibold text-gray-900 leading-tight mb-1">{community.name}</h2>
+          <p className="text-xs text-body-muted mb-3">mialmauniverso.com/{community.url_slug}</p>
+          <p className="text-sm text-gray-600 mb-4">{community.description || tagline}</p>
 
           {/* Links */}
           {links.filter(l => l.public).map((link, i) => (

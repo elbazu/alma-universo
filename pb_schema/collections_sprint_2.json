@@ -1,0 +1,201 @@
+[
+  {
+    "id": "pbc_community_settings",
+    "name": "community_settings",
+    "type": "base",
+    "system": false,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "@request.auth.email = \"zuniga.elba@gmail.com\"",
+    "updateRule": "@request.auth.email = \"zuniga.elba@gmail.com\"",
+    "deleteRule": null,
+    "fields": [
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "singleton_key",
+        "id": "text_singleton_key",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 20,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "name",
+        "id": "text_name",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 30,
+        "min": 1,
+        "pattern": "",
+        "presentable": true,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "description",
+        "id": "text_description",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 150,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "url_slug",
+        "id": "text_url_slug",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 40,
+        "min": 1,
+        "pattern": "^[a-z0-9-]+$",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "file",
+        "name": "icon",
+        "id": "file_icon",
+        "hidden": false,
+        "maxSelect": 1,
+        "maxSize": 2097152,
+        "mimeTypes": ["image/png", "image/jpeg", "image/webp"],
+        "presentable": false,
+        "protected": false,
+        "required": false,
+        "system": false,
+        "thumbs": ["128x128"]
+      },
+      {
+        "type": "file",
+        "name": "cover",
+        "id": "file_cover",
+        "hidden": false,
+        "maxSelect": 1,
+        "maxSize": 5242880,
+        "mimeTypes": ["image/png", "image/jpeg", "image/webp"],
+        "presentable": false,
+        "protected": false,
+        "required": false,
+        "system": false,
+        "thumbs": ["1084x576"]
+      },
+      {
+        "type": "bool",
+        "name": "is_public",
+        "id": "bool_is_public",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "email",
+        "name": "support_email",
+        "id": "email_support",
+        "hidden": false,
+        "onlyDomains": null,
+        "exceptDomains": null,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "show_classroom_tab",
+        "id": "bool_show_classroom",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "show_calendar_tab",
+        "id": "bool_show_calendar",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "show_map_tab",
+        "id": "bool_show_map",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "show_members_tab",
+        "id": "bool_show_members",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "show_about_tab",
+        "id": "bool_show_about",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_community_settings_singleton` ON `community_settings` (`singleton_key`)"
+    ]
+  }
+]
