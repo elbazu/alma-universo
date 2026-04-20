@@ -1,11 +1,20 @@
 'use client'
 
 import { useEffect, useState, ReactNode } from 'react'
-import { X, User, Palette, Bell, CreditCard, Shield } from 'lucide-react'
+import { X, User, Palette, Bell, CreditCard, Shield, BookOpen } from 'lucide-react'
 import { useTheme, ThemeChoice } from '@/context/ThemeContext'
 import { useFlag } from '@/context/FlagsContext'
+import ProfilePane from './panes/ProfilePane'
+import AccountPane from './panes/AccountPane'
+import MisCursosPane from './panes/MisCursosPane'
 
-type PaneKey = 'profile' | 'appearance' | 'notifications' | 'billing' | 'account'
+type PaneKey =
+  | 'profile'
+  | 'mis-cursos'
+  | 'appearance'
+  | 'notifications'
+  | 'billing'
+  | 'account'
 
 interface NavItem {
   key: PaneKey
@@ -16,14 +25,16 @@ interface NavItem {
 
 const NAV: NavItem[] = [
   { key: 'profile',       label: 'Perfil',         icon: <User size={16} /> },
+  { key: 'mis-cursos',    label: 'Mis cursos',     icon: <BookOpen size={16} /> },
   { key: 'appearance',    label: 'Apariencia',     icon: <Palette size={16} /> },
   { key: 'notifications', label: 'Notificaciones', icon: <Bell size={16} /> },
-  { key: 'billing',       label: 'Facturación',    icon: <CreditCard size={16} />, flag: 'stripe_enabled' },
   { key: 'account',       label: 'Cuenta',         icon: <Shield size={16} /> },
+  { key: 'billing',       label: 'Facturación',    icon: <CreditCard size={16} />, flag: 'stripe_enabled' },
 ]
 
 const PANE_TITLES: Record<PaneKey, string> = {
   profile:       'Perfil',
+  'mis-cursos':  'Mis cursos',
   appearance:    'Apariencia',
   notifications: 'Notificaciones',
   billing:       'Facturación',
@@ -100,6 +111,7 @@ export default function SettingsModal({ open, onClose, initialPane = 'profile' }
           </header>
           <div className="flex-1 overflow-y-auto p-6">
             {pane === 'profile' && <ProfilePane />}
+            {pane === 'mis-cursos' && <MisCursosPane />}
             {pane === 'appearance' && <AppearancePane />}
             {pane === 'notifications' && <NotificationsPane />}
             {pane === 'billing' && <BillingPane enabled={stripeEnabled} />}
@@ -119,15 +131,6 @@ function Placeholder({ title, body }: { title: string; body: string }) {
       <h4 className="font-display text-xl mb-2">{title}</h4>
       <p className="text-sm text-body-secondary">{body}</p>
     </div>
-  )
-}
-
-function ProfilePane() {
-  return (
-    <Placeholder
-      title="Tu perfil"
-      body="Aquí vas a poder editar tu nombre, foto y biografía cuando el perfil esté conectado (Sprint 4)."
-    />
   )
 }
 
@@ -198,11 +201,3 @@ function BillingPane({ enabled }: { enabled: boolean }) {
   )
 }
 
-function AccountPane() {
-  return (
-    <Placeholder
-      title="Cuenta"
-      body="Email, contraseña / magic-link, autenticación en dos pasos y exportación de datos se configuran acá (Sprint 4)."
-    />
-  )
-}

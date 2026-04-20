@@ -2,12 +2,14 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
-import { Search, Bell, MessageCircle, ChevronDown, LogOut, Settings, Settings2 } from 'lucide-react'
+import { Search, Bell, MessageCircle, ChevronDown, LogOut, Settings, Settings2, BookOpen } from 'lucide-react'
 import { useSettings } from '@/context/SettingsContext'
 import { useCommunitySettingsModal } from '@/context/CommunitySettingsContext'
 import { useCommunitySettings } from '@/context/CommunityDataContext'
 import { useFlag } from '@/context/FlagsContext'
+import { useProfile } from '@/context/ProfileContext'
 import { isAdmin } from '@/lib/admin'
+import { displayName as profileDisplayName } from '@/lib/profile'
 
 interface Tab {
   label: string
@@ -35,11 +37,14 @@ export default function Navbar() {
   const { openSettings } = useSettings()
   const { openCommunitySettings } = useCommunitySettingsModal()
   const community = useCommunitySettings()
+  const { profile } = useProfile()
   const chatEnabled = useFlag('chat_enabled')
   const userIsAdmin = isAdmin(user)
 
-  const displayName = user?.name || user?.email || community.name
+  const displayName =
+    profileDisplayName(profile, (user?.name as string) || (user?.email as string) || community.name)
   const initial = displayName.charAt(0).toUpperCase()
+  const avatarUrl = profile?.avatar_url
 
   const visibleTabs = TABS.filter(t => !t.visibleKey || community[t.visibleKey])
 
@@ -91,13 +96,19 @@ export default function Navbar() {
 
             {/* Avatar + dropdown */}
             <div className="relative group">
-              <div className="avatar w-9 h-9 cursor-pointer bg-brand-100 text-brand-600 text-sm font-semibold">
-                {initial}
+              <div className="avatar w-9 h-9 cursor-pointer bg-brand-100 text-brand-600 text-sm font-semibold overflow-hidden">
+                {avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
+                ) : (
+                  initial
+                )}
               </div>
               <div className="absolute right-0 top-full mt-1 w-56 bg-surface text-body rounded-xl shadow-lg border border-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
                 {user?.email && (
                   <div className="px-3 py-2 border-b border-border">
-                    <p className="text-xs text-body-secondary truncate">{user.email}</p>
+                    <p className="text-xs font-medium truncate">{displayName}</p>
+                    <p className="text-xs text-body-secondary truncate">{user.email as string}</p>
                   </div>
                 )}
                 <button
@@ -106,6 +117,13 @@ export default function Navbar() {
                 >
                   <Settings size={14} />
                   Configuración
+                </button>
+                <button
+                  onClick={() => openSettings('mis-cursos')}
+                  className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-body-secondary hover:text-body hover:bg-surface-secondary transition-colors border-t border-border"
+                >
+                  <BookOpen size={14} />
+                  Mis cursos
                 </button>
                 {userIsAdmin && (
                   <button

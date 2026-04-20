@@ -8,6 +8,7 @@ import { ThemeProvider } from '@/context/ThemeContext'
 import { SettingsProvider } from '@/context/SettingsContext'
 import { CommunityDataProvider } from '@/context/CommunityDataContext'
 import { CommunitySettingsProvider } from '@/context/CommunitySettingsContext'
+import { ProfileProvider } from '@/context/ProfileContext'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -46,15 +47,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-body bg-surface-secondary text-body antialiased">
         <ThemeProvider>
           <AuthProvider>
-            <FlagsProvider>
-              <CommunityDataProvider>
-                <SettingsProvider>
-                  <CommunitySettingsProvider>
-                    {children}
-                  </CommunitySettingsProvider>
-                </SettingsProvider>
-              </CommunityDataProvider>
-            </FlagsProvider>
+            <ProfileProvider>
+              <FlagsProvider>
+                <CommunityDataProvider>
+                  <SettingsProvider>
+                    <CommunitySettingsProvider>
+                      {children}
+                    </CommunitySettingsProvider>
+                  </SettingsProvider>
+                </CommunityDataProvider>
+              </FlagsProvider>
+            </ProfileProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

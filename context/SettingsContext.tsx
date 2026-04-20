@@ -3,7 +3,13 @@
 import { createContext, useContext, useState, ReactNode } from 'react'
 import SettingsModal from '@/components/settings/SettingsModal'
 
-type PaneKey = 'profile' | 'appearance' | 'notifications' | 'billing' | 'account'
+type PaneKey =
+  | 'profile'
+  | 'mis-cursos'
+  | 'appearance'
+  | 'notifications'
+  | 'billing'
+  | 'account'
 
 interface SettingsContextType {
   openSettings: (pane?: PaneKey) => void

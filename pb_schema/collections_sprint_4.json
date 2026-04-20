@@ -1,0 +1,424 @@
+[
+  {
+    "id": "pbc_user_profiles",
+    "name": "user_profiles",
+    "type": "base",
+    "system": false,
+    "listRule": "@request.auth.id != \"\"",
+    "viewRule": "@request.auth.id != \"\"",
+    "createRule": "@request.auth.id != \"\" && @request.auth.id = user.id",
+    "updateRule": "@request.auth.id != \"\" && @request.auth.id = user.id",
+    "deleteRule": null,
+    "fields": [
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "user",
+        "id": "rel_up_user",
+        "hidden": false,
+        "collectionId": "_pb_users_auth_",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "first_name",
+        "id": "text_first_name",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 40,
+        "min": 0,
+        "pattern": "",
+        "presentable": true,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "last_name",
+        "id": "text_last_name",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 40,
+        "min": 0,
+        "pattern": "",
+        "presentable": true,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "username",
+        "id": "text_username",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 30,
+        "min": 0,
+        "pattern": "^[a-z0-9_-]*$",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "file",
+        "name": "avatar",
+        "id": "file_avatar",
+        "hidden": false,
+        "maxSelect": 1,
+        "maxSize": 2097152,
+        "mimeTypes": [
+          "image/png",
+          "image/jpeg",
+          "image/webp"
+        ],
+        "presentable": false,
+        "protected": false,
+        "required": false,
+        "system": false,
+        "thumbs": ["128x128", "64x64"]
+      },
+      {
+        "type": "text",
+        "name": "bio",
+        "id": "text_bio",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 300,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "text",
+        "name": "location_text",
+        "id": "text_location_text",
+        "autogeneratePattern": "",
+        "hidden": false,
+        "max": 80,
+        "min": 0,
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "number",
+        "name": "location_lat",
+        "id": "num_location_lat",
+        "hidden": false,
+        "max": 90,
+        "min": -90,
+        "onlyInt": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "number",
+        "name": "location_lng",
+        "id": "num_location_lng",
+        "hidden": false,
+        "max": 180,
+        "min": -180,
+        "onlyInt": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "myers_briggs",
+        "id": "sel_myers_briggs",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "ISTJ", "ISFJ", "INFJ", "INTJ",
+          "ISTP", "ISFP", "INFP", "INTP",
+          "ESTP", "ESFP", "ENFP", "ENTP",
+          "ESTJ", "ESFJ", "ENFJ", "ENTJ"
+        ],
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "json",
+        "name": "social_links",
+        "id": "json_social_links",
+        "hidden": false,
+        "maxSize": 4000,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "show_location",
+        "id": "bool_show_location",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "show_membership_date",
+        "id": "bool_show_membership_date",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "show_online_status",
+        "id": "bool_show_online_status",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "date",
+        "name": "name_renamed_at",
+        "id": "date_name_renamed_at",
+        "hidden": false,
+        "max": "",
+        "min": "",
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "date",
+        "name": "username_changed_at",
+        "id": "date_username_changed_at",
+        "hidden": false,
+        "max": "",
+        "min": "",
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "number",
+        "name": "followers_count",
+        "id": "num_followers_count",
+        "hidden": false,
+        "max": null,
+        "min": 0,
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "number",
+        "name": "contributions_count",
+        "id": "num_contributions_count",
+        "hidden": false,
+        "max": null,
+        "min": 0,
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_user_profiles_user` ON `user_profiles` (`user`)",
+      "CREATE UNIQUE INDEX `idx_user_profiles_username` ON `user_profiles` (`username`) WHERE `username` != ''"
+    ]
+  },
+  {
+    "id": "pbc_4913622936",
+    "name": "enrollments",
+    "type": "base",
+    "system": false,
+    "listRule": "@request.auth.id = user.id",
+    "viewRule": "@request.auth.id = user.id",
+    "createRule": null,
+    "updateRule": "@request.auth.id = user.id",
+    "deleteRule": null,
+    "fields": [
+      {
+        "type": "text",
+        "name": "id",
+        "id": "text3208210256",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true
+      },
+      {
+        "type": "autodate",
+        "name": "created",
+        "id": "autodate2990389176",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "autodate",
+        "name": "updated",
+        "id": "autodate3332085495",
+        "hidden": false,
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "user",
+        "id": "rel9752515505",
+        "hidden": false,
+        "collectionId": "_pb_users_auth_",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "relation",
+        "name": "course",
+        "id": "rel5954025444",
+        "hidden": false,
+        "collectionId": "pbc_9466155966",
+        "cascadeDelete": true,
+        "maxSelect": 1,
+        "minSelect": null,
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "status",
+        "id": "select991175917",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "active",
+          "cancelled",
+          "pending"
+        ],
+        "presentable": false,
+        "required": true,
+        "system": false
+      },
+      {
+        "type": "date",
+        "name": "enrolled_at",
+        "id": "date3606493399",
+        "hidden": false,
+        "max": "",
+        "min": "",
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "date",
+        "name": "expires_at",
+        "id": "date7597008204",
+        "hidden": false,
+        "max": "",
+        "min": "",
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "select",
+        "name": "source",
+        "id": "select552153223",
+        "hidden": false,
+        "maxSelect": 1,
+        "values": [
+          "free",
+          "stripe",
+          "manual",
+          "promo"
+        ],
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "pinned",
+        "id": "bool_enrollment_pinned",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      },
+      {
+        "type": "bool",
+        "name": "hidden",
+        "id": "bool_enrollment_hidden",
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "system": false
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_enrollments_user_course` ON `enrollments` (`user`, `course`)"
+    ]
+  }
+]
