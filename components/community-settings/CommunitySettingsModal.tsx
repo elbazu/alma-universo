@@ -1,12 +1,22 @@
 'use client'
 
+/**
+ * CommunitySettingsModal — admin-only hub configuration.
+ *
+ * Sprint 2 built: General, Pestañas, Facturación.
+ * Sprint 1 adds: Categorías, Reglas (between Pestañas and the locked items).
+ */
+
 import { useEffect, useRef, useState, ReactNode, ChangeEvent } from 'react'
 import {
   X, Home, Compass, Settings2, Wallet, Tag, Users, Puzzle,
   Shield, LayoutGrid, CreditCard, AlertTriangle, Loader2, Check,
+  List, BookOpen,
 } from 'lucide-react'
 import { useCommunityData } from '@/context/CommunityDataContext'
 import { slugify } from '@/lib/community'
+import CategoriesPane from '@/components/community-settings/panes/CategoriesPane'
+import RulesPane from '@/components/community-settings/panes/RulesPane'
 
 const INPUT_CLASS =
   'w-full px-3 py-2 text-sm bg-surface-secondary border border-border rounded-lg ' +
@@ -14,8 +24,7 @@ const INPUT_CLASS =
   'placeholder:text-body-muted text-body transition'
 
 type PaneKey =
-  | 'general' | 'tabs' | 'billing'
-  // Locked panes (shown as "Próximamente" for Sprint 3+)
+  | 'general' | 'tabs' | 'categories' | 'rules' | 'billing'
   | 'dashboard' | 'discovery' | 'payouts' | 'pricing' | 'affiliates' | 'plugins'
 
 interface NavItem {
@@ -26,31 +35,36 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  // Sprint 3+ (locked for now)
-  { key: 'dashboard',  label: 'Panel',        icon: <Home size={16} />,      locked: true },
-  { key: 'discovery',  label: 'Descubrir',    icon: <Compass size={16} />,   locked: true },
+  // Sprint 3+ (locked)
+  { key: 'dashboard',   label: 'Panel',       icon: <Home size={16} />,       locked: true },
+  { key: 'discovery',   label: 'Descubrir',   icon: <Compass size={16} />,    locked: true },
   // Sprint 2 — active
-  { key: 'general',    label: 'General',      icon: <Settings2 size={16} /> },
-  { key: 'tabs',       label: 'Pestañas',     icon: <LayoutGrid size={16} /> },
-  // Sprint 3+ (locked for now)
-  { key: 'payouts',    label: 'Cobros',       icon: <Wallet size={16} />,    locked: true },
-  { key: 'pricing',    label: 'Precios',      icon: <Tag size={16} />,       locked: true },
-  { key: 'affiliates', label: 'Afiliados',    icon: <Users size={16} />,     locked: true },
-  { key: 'plugins',    label: 'Plugins',      icon: <Puzzle size={16} />,    locked: true },
+  { key: 'general',     label: 'General',     icon: <Settings2 size={16} /> },
+  { key: 'tabs',        label: 'Pestañas',    icon: <LayoutGrid size={16} /> },
+  // Sprint 1 — NEW
+  { key: 'categories',  label: 'Categorías',  icon: <List size={16} /> },
+  { key: 'rules',       label: 'Reglas',      icon: <BookOpen size={16} /> },
+  // Sprint 3+ (locked)
+  { key: 'payouts',     label: 'Cobros',      icon: <Wallet size={16} />,     locked: true },
+  { key: 'pricing',     label: 'Precios',     icon: <Tag size={16} />,        locked: true },
+  { key: 'affiliates',  label: 'Afiliados',   icon: <Users size={16} />,      locked: true },
+  { key: 'plugins',     label: 'Plugins',     icon: <Puzzle size={16} />,     locked: true },
   // Sprint 2 — active
-  { key: 'billing',    label: 'Facturación',  icon: <CreditCard size={16} /> },
+  { key: 'billing',     label: 'Facturación', icon: <CreditCard size={16} /> },
 ]
 
 const PANE_TITLES: Record<PaneKey, string> = {
-  dashboard:  'Panel',
-  discovery:  'Descubrir',
-  general:    'General',
-  tabs:       'Pestañas del hub',
-  payouts:    'Cobros',
-  pricing:    'Precios',
-  affiliates: 'Afiliados',
-  plugins:    'Plugins',
-  billing:    'Facturación',
+  dashboard:   'Panel',
+  discovery:   'Descubrir',
+  general:     'General',
+  tabs:        'Pestañas del hub',
+  categories:  'Categorías',
+  rules:       'Reglas',
+  payouts:     'Cobros',
+  pricing:     'Precios',
+  affiliates:  'Afiliados',
+  plugins:     'Plugins',
+  billing:     'Facturación',
 }
 
 interface Props {
@@ -81,33 +95,33 @@ export default function CommunitySettingsModal({ open, onClose, initialPane = 'g
       onClick={onClose}
     >
       <div
-        className="bg-surface text-body w-full max-w-4xl h-[86vh] max-h-[760px] rounded-2xl shadow-2xl border border-border flex overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
+        className="bg-surface text-body w-full max-w-3xl h-[80vh] max-h-[640px] rounded-2xl shadow-2xl border border-border flex overflow-hidden"
+        onClick={e => e.stopPropagation()}
       >
-        <aside className="w-60 bg-surface-secondary border-r border-border flex flex-col">
-          <div className="px-4 h-12 flex items-center border-b border-border">
+        {/* Left nav */}
+        <aside className="w-56 bg-surface-secondary border-r border-border flex flex-col flex-shrink-0">
+          <div className="px-4 h-12 flex items-center justify-between border-b border-border">
             <h2 className="text-sm font-semibold">Configurar comunidad</h2>
           </div>
           <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
             {NAV.map(item => (
               <button
                 key={item.key}
-                onClick={() => !item.locked && setPane(item.key)}
                 disabled={item.locked}
-                className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition text-left ${
-                  pane === item.key
-                    ? 'bg-brand-soft text-brand'
-                    : item.locked
-                      ? 'text-body-muted cursor-not-allowed'
-                      : 'text-body-secondary hover:bg-surface hover:text-body'
+                onClick={() => !item.locked && setPane(item.key)}
+                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition text-left ${
+                  item.locked
+                    ? 'opacity-40 cursor-not-allowed text-body-muted'
+                    : pane === item.key
+                      ? 'bg-brand-50 text-brand-700 font-medium'
+                      : 'text-body-muted hover:bg-surface hover:text-body'
                 }`}
-                style={pane === item.key ? { backgroundColor: 'rgb(var(--brand-soft))', color: 'rgb(var(--brand))' } : undefined}
               >
                 {item.icon}
                 <span className="flex-1">{item.label}</span>
                 {item.locked && (
-                  <span className="text-[10px] uppercase tracking-wide text-body-muted border border-border rounded px-1 py-0.5">
-                    Próximamente
+                  <span className="text-[10px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded font-medium">
+                    Próx.
                   </span>
                 )}
               </button>
@@ -115,497 +129,352 @@ export default function CommunitySettingsModal({ open, onClose, initialPane = 'g
           </nav>
         </aside>
 
-        <section className="flex-1 flex flex-col min-w-0">
-          <header className="h-12 px-5 flex items-center justify-between border-b border-border">
-            <h3 className="text-sm font-semibold">{selected?.label || PANE_TITLES[pane]}</h3>
+        {/* Right content */}
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Header */}
+          <div className="h-12 px-6 flex items-center justify-between border-b border-border flex-shrink-0">
+            <h3 className="text-sm font-semibold">{selected ? PANE_TITLES[selected.key] : ''}</h3>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg hover:bg-surface-secondary text-body-muted hover:text-body transition"
-              aria-label="Cerrar"
+              className="p-1.5 rounded-lg text-body-muted hover:text-body hover:bg-surface-secondary transition"
             >
               <X size={16} />
             </button>
-          </header>
-
-          <div className="flex-1 overflow-y-auto p-6">
-            {pane === 'general' && <GeneralPane />}
-            {pane === 'tabs' && <TabsPane />}
-            {pane === 'billing' && <BillingStubPane />}
-            {(pane === 'dashboard' || pane === 'discovery' || pane === 'payouts'
-              || pane === 'pricing' || pane === 'affiliates' || pane === 'plugins') && (
-              <LockedPane title={PANE_TITLES[pane]} />
-            )}
           </div>
-        </section>
+
+          {/* Pane content */}
+          <div className="flex-1 overflow-y-auto p-6">
+            {pane === 'general'    && <GeneralPane />}
+            {pane === 'tabs'       && <TabsPane />}
+            {pane === 'categories' && <CategoriesPane />}
+            {pane === 'rules'      && <RulesPane />}
+            {pane === 'billing'    && <BillingPane />}
+            {NAV.find(n => n.key === pane)?.locked && <LockedPane label={PANE_TITLES[pane]} />}
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
-/* ─── General ───────────────────────────────────────── */
+// ─── Locked pane placeholder ─────────────────────────────────────────────────
+
+function LockedPane({ label }: { label: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center h-full text-center py-12">
+      <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+        <Shield size={20} className="text-gray-400" />
+      </div>
+      <p className="font-medium text-body">{label}</p>
+      <p className="text-sm text-body-muted mt-1">Disponible en un sprint próximo.</p>
+    </div>
+  )
+}
+
+// ─── General pane ────────────────────────────────────────────────────────────
 
 function GeneralPane() {
-  const { settings, isLoading, error, save, saveFiles } = useCommunityData()
+  const { settings, refresh } = useCommunityData()
+  const [name, setName] = useState(settings?.name ?? '')
+  const [description, setDescription] = useState(settings?.description ?? '')
+  const [urlSlug, setUrlSlug] = useState(settings?.url_slug ?? '')
+  const [supportEmail, setSupportEmail] = useState(settings?.support_email ?? '')
+  const [isPublic, setIsPublic] = useState(settings?.is_public ?? true)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
+  const iconRef = useRef<HTMLInputElement>(null)
+  const coverRef = useRef<HTMLInputElement>(null)
 
-  const [name, setName] = useState(settings.name)
-  const [description, setDescription] = useState(settings.description)
-  const [supportEmail, setSupportEmail] = useState(settings.support_email)
-  const [isPublic, setIsPublic] = useState(settings.is_public)
-  const [editingSlug, setEditingSlug] = useState(false)
-  const [slug, setSlug] = useState(settings.url_slug)
-
-  const [status, setStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
-  const [localError, setLocalError] = useState<string | null>(null)
-
-  const iconInputRef = useRef<HTMLInputElement>(null)
-  const coverInputRef = useRef<HTMLInputElement>(null)
-
+  // Sync when settings loads
   useEffect(() => {
-    setName(settings.name)
-    setDescription(settings.description)
-    setSupportEmail(settings.support_email)
-    setIsPublic(settings.is_public)
-    setSlug(settings.url_slug)
+    if (!settings) return
+    setName(settings.name ?? '')
+    setDescription(settings.description ?? '')
+    setUrlSlug(settings.url_slug ?? '')
+    setSupportEmail(settings.support_email ?? '')
+    setIsPublic(settings.is_public ?? true)
   }, [settings])
 
-  async function onSave() {
-    setStatus('saving')
-    setLocalError(null)
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault()
+    if (!name.trim()) { setError('El nombre es obligatorio.'); return }
+    setSaving(true)
+    setError('')
     try {
-      await save({
-        name: name.slice(0, 30),
-        description: description.slice(0, 150),
-        support_email: supportEmail,
+      const { updateCommunitySettings } = await import('@/lib/community')
+      await updateCommunitySettings({
+        name: name.trim(),
+        description: description.trim(),
+        url_slug: slugify(urlSlug || name),
+        support_email: supportEmail.trim(),
         is_public: isPublic,
-        url_slug: slugify(slug),
       })
-      setStatus('saved')
-      setEditingSlug(false)
-      setTimeout(() => setStatus('idle'), 2000)
-    } catch (e) {
-      setStatus('idle')
-      setLocalError((e as Error)?.message || 'No se pudo guardar.')
+      await refresh()
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
+    } catch {
+      setError('Error al guardar. Intenta de nuevo.')
+    } finally {
+      setSaving(false)
     }
   }
 
-  async function onPickIcon(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setStatus('saving')
+  async function handleFileUpload(field: 'icon' | 'cover', file: File) {
     try {
-      await saveFiles({ icon: file })
-      setStatus('saved')
-      setTimeout(() => setStatus('idle'), 2000)
-    } catch (err) {
-      setStatus('idle')
-      setLocalError((err as Error)?.message || 'No se pudo subir el icono.')
+      const { updateCommunitySettings } = await import('@/lib/community')
+      await updateCommunitySettings(field === 'icon' ? { icon: file } : { cover_image: file })
+      await refresh()
+    } catch {
+      setError('Error al subir la imagen.')
     }
-  }
-
-  async function onPickCover(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setStatus('saving')
-    try {
-      await saveFiles({ cover: file })
-      setStatus('saved')
-      setTimeout(() => setStatus('idle'), 2000)
-    } catch (err) {
-      setStatus('idle')
-      setLocalError((err as Error)?.message || 'No se pudo subir la portada.')
-    }
-  }
-
-  if (isLoading) {
-    return <div className="text-sm text-body-muted flex items-center gap-2"><Loader2 className="animate-spin" size={14} /> Cargando…</div>
   }
 
   return (
-    <div className="max-w-2xl space-y-6">
-      {(error || localError) && (
-        <div className="rounded-lg border border-red-200 bg-red-50 text-red-800 px-3 py-2 text-sm">
-          {localError || error}
-        </div>
-      )}
-
-      {/* Images */}
-      <div className="grid grid-cols-[auto,1fr] gap-4 items-start">
+    <form onSubmit={handleSave} className="space-y-5">
+      {/* Cover / Icon uploads */}
+      <div className="space-y-3">
         <div>
-          <label className="text-xs font-medium text-body-secondary block mb-2">Icono (128×128)</label>
-          <button
-            onClick={() => iconInputRef.current?.click()}
-            className="w-24 h-24 rounded-2xl border border-dashed border-border bg-surface-secondary hover:border-brand-400 overflow-hidden flex items-center justify-center"
-          >
-            {settings.icon_url ? (
-              <img src={settings.icon_url} alt="Icono" className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-xs text-body-muted text-center px-2">Subir icono</span>
-            )}
+          <label className="block text-xs font-medium text-body mb-1">
+            Portada <span className="text-body-muted font-normal">(1084 × 576 px, máx 5 MB)</span>
+          </label>
+          <input ref={coverRef} type="file" accept="image/png,image/jpeg,image/webp" className="hidden"
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const f = e.target.files?.[0]; if (f) handleFileUpload('cover', f)
+            }} />
+          <button type="button" onClick={() => coverRef.current?.click()}
+            className="text-sm text-brand-600 hover:underline">
+            {settings?.cover_image ? 'Cambiar portada' : 'Subir portada'}
           </button>
-          <input
-            ref={iconInputRef}
-            type="file"
-            accept="image/png,image/jpeg,image/webp"
-            className="hidden"
-            onChange={onPickIcon}
-          />
         </div>
-
-        <div className="flex-1">
-          <label className="text-xs font-medium text-body-secondary block mb-2">Portada (1084×576)</label>
-          <button
-            onClick={() => coverInputRef.current?.click()}
-            className="w-full aspect-[1084/576] rounded-xl border border-dashed border-border bg-surface-secondary hover:border-brand-400 overflow-hidden flex items-center justify-center"
-          >
-            {settings.cover_url ? (
-              <img src={settings.cover_url} alt="Portada" className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-xs text-body-muted">Subir portada</span>
-            )}
+        <div>
+          <label className="block text-xs font-medium text-body mb-1">
+            Icono del hub <span className="text-body-muted font-normal">(128 × 128 px, máx 2 MB)</span>
+          </label>
+          <input ref={iconRef} type="file" accept="image/png,image/jpeg,image/webp" className="hidden"
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const f = e.target.files?.[0]; if (f) handleFileUpload('icon', f)
+            }} />
+          <button type="button" onClick={() => iconRef.current?.click()}
+            className="text-sm text-brand-600 hover:underline">
+            {settings?.icon ? 'Cambiar icono' : 'Subir icono'}
           </button>
-          <input
-            ref={coverInputRef}
-            type="file"
-            accept="image/png,image/jpeg,image/webp"
-            className="hidden"
-            onChange={onPickCover}
-          />
         </div>
       </div>
 
-      {/* Name */}
-      <Field label="Nombre del grupo" hint={`${name.length}/30`}>
-        <input
-          type="text"
-          value={name}
-          maxLength={30}
-          onChange={(e) => setName(e.target.value)}
-          className={INPUT_CLASS}
-        />
-      </Field>
-
-      {/* Description */}
-      <Field label="Descripción" hint={`${description.length}/150`}>
-        <textarea
-          value={description}
-          maxLength={150}
-          onChange={(e) => setDescription(e.target.value)}
-          rows={3}
-          className={`${INPUT_CLASS} resize-none`}
-        />
-      </Field>
-
-      {/* URL */}
-      <Field label="URL personalizada" hint="Se usa en los links públicos del hub.">
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-body-muted">mialmauniverso.com/</span>
-          {editingSlug ? (
-            <>
-              <input
-                type="text"
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                className={`${INPUT_CLASS} flex-1`}
-              />
-              <button
-                onClick={() => { setSlug(settings.url_slug); setEditingSlug(false) }}
-                className="text-xs text-body-muted hover:text-body"
-              >
-                Cancelar
-              </button>
-            </>
-          ) : (
-            <>
-              <span className="text-sm font-medium">{settings.url_slug}</span>
-              <button
-                onClick={() => setEditingSlug(true)}
-                className="text-xs text-brand-600 hover:underline"
-              >
-                Cambiar URL
-              </button>
-            </>
-          )}
+      <div className="border-t border-border pt-4 space-y-4">
+        <div>
+          <label className="block text-xs font-medium text-body mb-1">
+            Nombre del hub <span className="text-body-muted">(máx 30 caracteres)</span>
+          </label>
+          <input value={name} onChange={e => setName(e.target.value)} maxLength={30}
+            placeholder="Mi Alma en el Universo" className={INPUT_CLASS} />
         </div>
-      </Field>
 
-      {/* Public / Private */}
-      <Field label="Visibilidad">
-        <div className="space-y-2">
-          <Radio
-            checked={isPublic}
-            onChange={() => setIsPublic(true)}
-            title="Público"
-            description="Cualquiera puede ver la página principal del hub."
-          />
-          <Radio
-            checked={!isPublic}
-            onChange={() => setIsPublic(false)}
-            title="Privado"
-            description="Solo miembros inscritos pueden ver el contenido."
-          />
+        <div>
+          <label className="block text-xs font-medium text-body mb-1">
+            Descripción <span className="text-body-muted">(máx 150 caracteres)</span>
+          </label>
+          <textarea value={description} onChange={e => setDescription(e.target.value)}
+            maxLength={150} rows={3} placeholder="Describe tu comunidad…"
+            className={INPUT_CLASS + ' resize-none'} />
+          <p className="text-xs text-body-muted text-right mt-0.5">{description.length}/150</p>
         </div>
-      </Field>
 
-      {/* Support email */}
-      <Field label="Email de soporte" hint="Donde te escriben los miembros si tienen problemas.">
-        <input
-          type="email"
-          value={supportEmail}
-          onChange={(e) => setSupportEmail(e.target.value)}
-          className={INPUT_CLASS}
-        />
-      </Field>
+        <div>
+          <label className="block text-xs font-medium text-body mb-1">URL personalizada</label>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-body-muted flex-shrink-0">mialmauniverso.com/</span>
+            <input value={urlSlug} onChange={e => setUrlSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+              placeholder="mi-comunidad" className={INPUT_CLASS} />
+          </div>
+        </div>
 
-      <div className="flex items-center gap-3 pt-2 border-t border-border">
-        <button
-          onClick={onSave}
-          disabled={status === 'saving'}
-          className="px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium transition disabled:opacity-50 flex items-center gap-2"
-          style={{ backgroundColor: 'rgb(var(--brand))' }}
-        >
-          {status === 'saving' && <Loader2 size={14} className="animate-spin" />}
-          {status === 'saved' && <Check size={14} />}
-          {status === 'saved' ? 'Guardado' : 'Guardar cambios'}
+        <div>
+          <label className="block text-xs font-medium text-body mb-1">Email de soporte</label>
+          <input type="email" value={supportEmail} onChange={e => setSupportEmail(e.target.value)}
+            placeholder="hola@mialmauniverso.com" className={INPUT_CLASS} />
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-body">Visibilidad</p>
+            <p className="text-xs text-body-muted mt-0.5">
+              {isPublic ? 'Público — visible en búsquedas' : 'Privado — solo miembros con link'}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsPublic(p => !p)}
+            className={`relative w-11 h-6 rounded-full transition-colors ${isPublic ? 'bg-brand-500' : 'bg-gray-300'}`}
+          >
+            <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${isPublic ? 'translate-x-5' : 'translate-x-0'}`} />
+          </button>
+        </div>
+      </div>
+
+      {error && <p className="text-xs text-red-500">{error}</p>}
+
+      <div className="flex justify-end pt-2 border-t border-border">
+        <button type="submit" disabled={saving}
+          className="px-5 py-2 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 disabled:opacity-50 transition flex items-center gap-2">
+          {saving ? <Loader2 size={13} className="animate-spin" /> : saved ? <Check size={13} /> : null}
+          {saved ? 'Guardado' : 'Guardar'}
         </button>
-        {status === 'saved' && (
-          <span className="text-xs text-green-700">Los cambios se aplicaron en todo el hub.</span>
-        )}
       </div>
-    </div>
+    </form>
   )
 }
 
-/* ─── Tabs ──────────────────────────────────────────── */
-
-type TabKey =
-  | 'show_classroom_tab'
-  | 'show_calendar_tab'
-  | 'show_map_tab'
-  | 'show_members_tab'
-  | 'show_about_tab'
+// ─── Tabs pane ───────────────────────────────────────────────────────────────
 
 function TabsPane() {
-  const { settings, save, isLoading, error } = useCommunityData()
-  const [localError, setLocalError] = useState<string | null>(null)
-  const [busy, setBusy] = useState<TabKey | null>(null)
+  const { settings, refresh } = useCommunityData()
+  const [classroomOn, setClassroomOn] = useState(settings?.show_classroom_tab ?? true)
+  const [calendarOn, setCalendarOn] = useState(settings?.show_calendar_tab ?? true)
+  const [mapOn, setMapOn] = useState(settings?.show_map_tab ?? false)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
 
-  async function toggle(key: TabKey, next: boolean) {
-    setBusy(key)
-    setLocalError(null)
+  useEffect(() => {
+    if (!settings) return
+    setClassroomOn(settings.show_classroom_tab ?? true)
+    setCalendarOn(settings.show_calendar_tab ?? true)
+    setMapOn(settings.show_map_tab ?? false)
+  }, [settings])
+
+  const tabs = [
+    { label: 'Classroom', desc: 'Cursos, módulos y lecciones.', value: classroomOn, set: setClassroomOn, field: 'show_classroom_tab' },
+    { label: 'Calendario', desc: 'Eventos en vivo y sesiones.', value: calendarOn, set: setCalendarOn, field: 'show_calendar_tab' },
+    { label: 'Mapa', desc: 'Mapa de miembros.', value: mapOn, set: setMapOn, field: 'show_map_tab' },
+  ]
+
+  async function handleSave() {
+    setSaving(true)
     try {
-      await save({ [key]: next } as Record<TabKey, boolean>)
-    } catch (e) {
-      setLocalError((e as Error)?.message || 'No se pudo guardar el cambio.')
+      const { updateCommunitySettings } = await import('@/lib/community')
+      await updateCommunitySettings({
+        show_classroom_tab: classroomOn,
+        show_calendar_tab: calendarOn,
+        show_map_tab: mapOn,
+      })
+      await refresh()
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
     } finally {
-      setBusy(null)
+      setSaving(false)
     }
   }
 
-  if (isLoading) {
-    return <div className="text-sm text-body-muted flex items-center gap-2"><Loader2 className="animate-spin" size={14} /> Cargando…</div>
-  }
-
-  const rows: { key: TabKey; label: string; description: string }[] = [
-    { key: 'show_classroom_tab', label: 'Classroom', description: 'Cursos, módulos y lecciones.' },
-    { key: 'show_calendar_tab',  label: 'Calendario', description: 'Eventos en vivo y sesiones.' },
-    { key: 'show_map_tab',       label: 'Mapa',       description: 'Mapa mundial de miembros inscritos.' },
-    { key: 'show_members_tab',   label: 'Miembros',   description: 'Lista pública de miembros del hub.' },
-    { key: 'show_about_tab',     label: 'Acerca de',  description: 'Página de introducción al hub.' },
-  ]
-
   return (
-    <div className="max-w-2xl space-y-4">
-      <p className="text-sm text-body-secondary">
-        Controlá qué pestañas se ven en el nav principal. Si apagás una, desaparece para todos los miembros.
+    <div className="space-y-4">
+      <p className="text-sm text-body-muted">
+        Activa o desactiva las pestañas que aparecen en la navegación principal.
       </p>
-
-      {(error || localError) && (
-        <div className="rounded-lg border border-red-200 bg-red-50 text-red-800 px-3 py-2 text-sm">
-          {localError || error}
-        </div>
-      )}
-
-      <div className="border border-border rounded-xl divide-y divide-border overflow-hidden">
-        {rows.map(row => {
-          const enabled = Boolean(settings[row.key])
-          return (
-            <div key={row.key} className="flex items-center gap-4 px-4 py-3">
-              <div className="flex-1">
-                <div className="text-sm font-medium">{row.label}</div>
-                <div className="text-xs text-body-secondary">{row.description}</div>
-              </div>
-              <Switch
-                checked={enabled}
-                onChange={(v) => toggle(row.key, v)}
-                loading={busy === row.key}
-              />
+      <div className="divide-y divide-border border border-border rounded-xl overflow-hidden">
+        {tabs.map(tab => (
+          <div key={tab.field} className="flex items-center justify-between px-4 py-3 bg-surface">
+            <div>
+              <p className="text-sm font-medium text-body">{tab.label}</p>
+              <p className="text-xs text-body-muted">{tab.desc}</p>
             </div>
-          )
-        })}
+            <button
+              onClick={() => tab.set(v => !v)}
+              className={`relative w-11 h-6 rounded-full transition-colors ${tab.value ? 'bg-brand-500' : 'bg-gray-300'}`}
+            >
+              <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${tab.value ? 'translate-x-5' : 'translate-x-0'}`} />
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-end">
+        <button onClick={handleSave} disabled={saving}
+          className="px-5 py-2 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 disabled:opacity-50 transition flex items-center gap-2">
+          {saving ? <Loader2 size={13} className="animate-spin" /> : saved ? <Check size={13} /> : null}
+          {saved ? 'Guardado' : 'Guardar'}
+        </button>
       </div>
     </div>
   )
 }
 
-/* ─── Billing stub ──────────────────────────────────── */
+// ─── Billing pane ────────────────────────────────────────────────────────────
 
-function BillingStubPane() {
-  const [confirmDelete, setConfirmDelete] = useState(false)
+function BillingPane() {
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   return (
-    <div className="max-w-2xl space-y-6">
-      <div className="rounded-lg border border-amber-200 bg-amber-50 text-amber-900 px-3 py-2 text-xs">
-        Durante la beta, la facturación del hub está desactivada. Esta pantalla es solo una vista previa.
+    <div className="space-y-5">
+      {/* Beta banner */}
+      <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4">
+        <AlertTriangle size={16} className="text-amber-500 flex-shrink-0 mt-0.5" />
+        <div>
+          <p className="text-sm font-medium text-amber-800">Modo beta</p>
+          <p className="text-xs text-amber-700 mt-0.5">
+            La facturación y pagos estarán disponibles en Sprint 7 cuando se active Stripe.
+            Por ahora todos los usuarios tienen acceso gratuito.
+          </p>
+        </div>
       </div>
 
-      <section>
-        <h4 className="font-display text-lg mb-2">Plan actual</h4>
-        <div className="border border-border rounded-xl p-4 flex items-center justify-between">
+      {/* Plan card */}
+      <div className="border border-border rounded-xl p-4 space-y-3">
+        <div className="flex items-center justify-between">
           <div>
-            <div className="text-sm font-medium">Hobby (gratis)</div>
-            <div className="text-xs text-body-secondary">Hasta 50 miembros · Sin cobros por curso.</div>
+            <p className="text-sm font-semibold text-body">Plan actual</p>
+            <p className="text-xs text-body-muted">Hobby — Gratis</p>
           </div>
-          <span className="text-xs uppercase tracking-wide text-green-700 bg-green-50 border border-green-200 rounded px-2 py-1">Activo</span>
+          <span className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium">Activo</span>
         </div>
-      </section>
-
-      <section>
-        <h4 className="font-display text-lg mb-2">Tarjeta de pago</h4>
-        <div className="border border-dashed border-border rounded-xl p-4 text-sm text-body-muted">
-          No hay tarjeta guardada todavía. Cuando el flag <code className="bg-surface-secondary px-1 rounded">stripe_enabled</code> se active, acá vas a poder agregar una.
+        <div className="border-t border-border pt-3 space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-body-muted">Método de pago</span>
+            <span className="text-body">—</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-body-muted">Próximo cobro</span>
+            <span className="text-body">—</span>
+          </div>
         </div>
-        <div className="mt-2 flex gap-2">
-          <button disabled className="px-3 py-1.5 text-xs rounded-lg border border-border text-body-muted cursor-not-allowed">
+        <div className="border-t border-border pt-3 flex flex-col gap-2">
+          <button disabled
+            className="w-full py-2 text-sm border border-border rounded-lg text-body-muted cursor-not-allowed opacity-50">
             Actualizar método de pago
           </button>
-          <button disabled className="px-3 py-1.5 text-xs rounded-lg border border-border text-body-muted cursor-not-allowed">
+          <button disabled
+            className="w-full py-2 text-sm border border-border rounded-lg text-body-muted cursor-not-allowed opacity-50">
             Gestionar suscripción
           </button>
         </div>
-      </section>
+      </div>
 
-      <section>
-        <h4 className="font-display text-lg mb-2">Periodo de prueba</h4>
-        <p className="text-sm text-body-secondary">
-          Como todavía estás en beta, el periodo de prueba no aplica. Cuando Stripe esté activo, acá se mostrará la fecha de fin de tu trial.
+      {/* Danger zone */}
+      <div className="border border-red-200 rounded-xl p-4 space-y-3">
+        <p className="text-sm font-semibold text-red-700">Zona peligrosa</p>
+        <p className="text-xs text-body-muted">
+          Eliminar el hub borrará todo el contenido, miembros y configuración de forma permanente.
         </p>
-      </section>
-
-      <section className="pt-6 border-t border-border">
-        <h4 className="font-display text-lg mb-2 text-red-700 flex items-center gap-2">
-          <AlertTriangle size={18} /> Zona de peligro
-        </h4>
-        <p className="text-sm text-body-secondary mb-3">
-          Eliminar el hub borra todos los cursos, posts, miembros y datos asociados. Esta acción no se puede deshacer.
-        </p>
-        {confirmDelete ? (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-3 space-y-2">
-            <p className="text-sm text-red-900 font-medium">¿Estás segura? Esto es irreversible.</p>
-            <p className="text-xs text-red-800">
-              Esta acción está deshabilitada durante la beta. Si realmente querés eliminar el hub, contactá soporte.
-            </p>
+        {showDeleteConfirm ? (
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-red-600">¿Estás segura? Esta acción no se puede deshacer.</p>
             <div className="flex gap-2">
-              <button
-                disabled
-                className="px-3 py-1.5 text-xs rounded-lg bg-red-600 text-white opacity-60 cursor-not-allowed"
-              >
-                Eliminar hub (deshabilitado)
-              </button>
-              <button
-                onClick={() => setConfirmDelete(false)}
-                className="px-3 py-1.5 text-xs rounded-lg border border-border hover:bg-surface-secondary"
-              >
+              <button onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 py-1.5 text-xs border border-border rounded-lg text-body-muted hover:text-body transition">
                 Cancelar
+              </button>
+              <button disabled
+                className="flex-1 py-1.5 text-xs rounded-lg bg-red-500 text-white opacity-50 cursor-not-allowed">
+                Confirmar (desactivado en beta)
               </button>
             </div>
           </div>
         ) : (
-          <button
-            onClick={() => setConfirmDelete(true)}
-            className="px-3 py-1.5 text-xs rounded-lg border border-red-300 text-red-700 hover:bg-red-50"
-          >
+          <button onClick={() => setShowDeleteConfirm(true)}
+            className="w-full py-2 text-sm border border-red-300 rounded-lg text-red-600 hover:bg-red-50 transition">
             Eliminar hub
           </button>
         )}
-      </section>
-    </div>
-  )
-}
-
-/* ─── Locked pane ───────────────────────────────────── */
-
-function LockedPane({ title }: { title: string }) {
-  return (
-    <div className="max-w-md">
-      <div className="flex items-center gap-2 mb-3">
-        <Shield size={18} className="text-body-muted" />
-        <h4 className="font-display text-xl">{title}</h4>
       </div>
-      <p className="text-sm text-body-secondary">
-        Esta sección llega en un sprint próximo. Mientras tanto, el hub funciona con los valores por defecto.
-      </p>
     </div>
-  )
-}
-
-/* ─── Primitives ────────────────────────────────────── */
-
-function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
-  return (
-    <div>
-      <div className="flex items-baseline justify-between mb-1.5">
-        <label className="text-xs font-medium text-body-secondary">{label}</label>
-        {hint && <span className="text-[11px] text-body-muted">{hint}</span>}
-      </div>
-      {children}
-    </div>
-  )
-}
-
-function Radio({
-  checked, onChange, title, description,
-}: { checked: boolean; onChange: () => void; title: string; description: string }) {
-  return (
-    <button
-      type="button"
-      onClick={onChange}
-      className={`w-full text-left p-3 rounded-lg border transition ${
-        checked ? 'border-brand-500 bg-brand-50 dark:bg-brand-950' : 'border-border hover:border-brand-300'
-      }`}
-    >
-      <div className="flex items-center gap-2">
-        <span className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
-          checked ? 'border-brand-500' : 'border-border'
-        }`}>
-          {checked && <span className="w-2 h-2 rounded-full bg-brand-500" style={{ backgroundColor: 'rgb(var(--brand))' }} />}
-        </span>
-        <span className="text-sm font-medium">{title}</span>
-      </div>
-      <p className="text-xs text-body-secondary mt-0.5 ml-5">{description}</p>
-    </button>
-  )
-}
-
-function Switch({
-  checked, onChange, loading,
-}: { checked: boolean; onChange: (v: boolean) => void; loading?: boolean }) {
-  return (
-    <button
-      onClick={() => !loading && onChange(!checked)}
-      disabled={loading}
-      className={`relative inline-flex w-10 h-6 rounded-full transition ${
-        checked ? 'bg-brand-500' : 'bg-surface-secondary border border-border'
-      }`}
-      style={checked ? { backgroundColor: 'rgb(var(--brand))' } : undefined}
-      aria-pressed={checked}
-    >
-      <span
-        className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
-          checked ? 'translate-x-4' : 'translate-x-0'
-        } flex items-center justify-center`}
-      >
-        {loading && <Loader2 size={10} className="animate-spin text-body-muted" />}
-      </span>
-    </button>
   )
 }
