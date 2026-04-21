@@ -130,7 +130,7 @@ function LessonRow({
           <Lock size={13} className="text-gray-400" />
         )}
         {!lesson.is_published && (
-          <EyeOff size={13} className="text-amber-500" title="No publicada" />
+          <EyeOff size={13} className="text-amber-500" aria-label="No publicada" />
         )}
         {admin && !editing && (
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
@@ -222,7 +222,7 @@ function ModuleAccordion({
             <span className="font-medium text-sm text-body truncate">{mod.title}</span>
           )}
           {!mod.is_published && (
-            <EyeOff size={12} className="text-amber-500 flex-shrink-0" title="No publicado" />
+            <EyeOff size={12} className="text-amber-500 flex-shrink-0" aria-label="No publicado" />
           )}
         </button>
         {admin && !editingTitle && (

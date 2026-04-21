@@ -174,7 +174,7 @@ function LockedPane({ label }: { label: string }) {
 // ─── General pane ────────────────────────────────────────────────────────────
 
 function GeneralPane() {
-  const { settings, refresh } = useCommunityData()
+  const { settings, refresh, save, saveFiles } = useCommunityData()
   const [name, setName] = useState(settings?.name ?? '')
   const [description, setDescription] = useState(settings?.description ?? '')
   const [urlSlug, setUrlSlug] = useState(settings?.url_slug ?? '')
@@ -202,8 +202,7 @@ function GeneralPane() {
     setSaving(true)
     setError('')
     try {
-      const { updateCommunitySettings } = await import('@/lib/community')
-      await updateCommunitySettings({
+      await save({
         name: name.trim(),
         description: description.trim(),
         url_slug: slugify(urlSlug || name),
@@ -222,8 +221,7 @@ function GeneralPane() {
 
   async function handleFileUpload(field: 'icon' | 'cover', file: File) {
     try {
-      const { updateCommunitySettings } = await import('@/lib/community')
-      await updateCommunitySettings(field === 'icon' ? { icon: file } : { cover_image: file })
+      await saveFiles(field === 'icon' ? { icon: file } : { cover: file })
       await refresh()
     } catch {
       setError('Error al subir la imagen.')
@@ -244,7 +242,7 @@ function GeneralPane() {
             }} />
           <button type="button" onClick={() => coverRef.current?.click()}
             className="text-sm text-brand-600 hover:underline">
-            {settings?.cover_image ? 'Cambiar portada' : 'Subir portada'}
+            {settings?.cover_url ? 'Cambiar portada' : 'Subir portada'}
           </button>
         </div>
         <div>
@@ -257,7 +255,7 @@ function GeneralPane() {
             }} />
           <button type="button" onClick={() => iconRef.current?.click()}
             className="text-sm text-brand-600 hover:underline">
-            {settings?.icon ? 'Cambiar icono' : 'Subir icono'}
+            {settings?.icon_url ? 'Cambiar icono' : 'Subir icono'}
           </button>
         </div>
       </div>
@@ -329,7 +327,7 @@ function GeneralPane() {
 // ─── Tabs pane ───────────────────────────────────────────────────────────────
 
 function TabsPane() {
-  const { settings, refresh } = useCommunityData()
+  const { settings, refresh, save } = useCommunityData()
   const [classroomOn, setClassroomOn] = useState(settings?.show_classroom_tab ?? true)
   const [calendarOn, setCalendarOn] = useState(settings?.show_calendar_tab ?? true)
   const [mapOn, setMapOn] = useState(settings?.show_map_tab ?? false)
@@ -352,8 +350,7 @@ function TabsPane() {
   async function handleSave() {
     setSaving(true)
     try {
-      const { updateCommunitySettings } = await import('@/lib/community')
-      await updateCommunitySettings({
+      await save({
         show_classroom_tab: classroomOn,
         show_calendar_tab: calendarOn,
         show_map_tab: mapOn,
