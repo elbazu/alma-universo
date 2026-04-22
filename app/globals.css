@@ -336,3 +336,130 @@ h1, h2, h3, .font-display {
   50%       { transform: translateY(-8px); }
 }
 .animate-float { animation: float 4s ease-in-out infinite; }
+
+/* ═══════════════════════════════════════════════════
+   TIPTAP / LESSON EDITOR STYLES
+   ═══════════════════════════════════════════════════ */
+
+/* Editor root wrapper */
+.lesson-editor-root {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: rgb(var(--text-primary));
+}
+
+/* ProseMirror editable area */
+.lesson-editor-prose {
+  outline: none;
+}
+
+/* Placeholder */
+.lesson-editor-prose p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: rgb(var(--text-muted));
+  pointer-events: none;
+  height: 0;
+}
+
+/* Typography in editor AND viewer */
+.lesson-editor-root h1,
+.lesson-content-html h1 { font-size: 1.5rem; font-weight: 700; margin: 1.2em 0 0.5em; line-height: 1.3; }
+.lesson-editor-root h2,
+.lesson-content-html h2 { font-size: 1.25rem; font-weight: 600; margin: 1.1em 0 0.4em; line-height: 1.35; }
+.lesson-editor-root h3,
+.lesson-content-html h3 { font-size: 1.1rem; font-weight: 600; margin: 1em 0 0.35em; line-height: 1.4; }
+.lesson-editor-root h4,
+.lesson-content-html h4 { font-size: 1rem; font-weight: 600; margin: 0.9em 0 0.3em; }
+
+.lesson-editor-root p,
+.lesson-content-html p { margin: 0.5em 0; }
+
+.lesson-editor-root ul,
+.lesson-content-html ul { list-style: disc; padding-left: 1.5em; margin: 0.5em 0; }
+.lesson-editor-root ol,
+.lesson-content-html ol { list-style: decimal; padding-left: 1.5em; margin: 0.5em 0; }
+.lesson-editor-root li,
+.lesson-content-html li { margin: 0.2em 0; }
+
+.lesson-editor-root blockquote,
+.lesson-content-html blockquote {
+  border-left: 3px solid rgb(var(--brand));
+  padding: 0.4em 0 0.4em 1em;
+  margin: 0.8em 0;
+  color: rgb(var(--text-secondary));
+  font-style: italic;
+}
+
+.lesson-editor-root code,
+.lesson-content-html code {
+  background: rgb(var(--surface-secondary));
+  border: 1px solid rgb(var(--border));
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875em;
+}
+
+.lesson-editor-root pre,
+.lesson-content-html pre {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  border-radius: 8px;
+  padding: 1em 1.2em;
+  margin: 0.8em 0;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875em;
+}
+
+.lesson-editor-root pre code,
+.lesson-content-html pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+
+.lesson-editor-root hr,
+.lesson-content-html hr {
+  border: none;
+  border-top: 1px solid rgb(var(--border));
+  margin: 1.5em 0;
+}
+
+.lesson-editor-root img,
+.lesson-content-html img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 0.6em 0;
+}
+
+.lesson-editor-root a,
+.lesson-content-html a {
+  color: rgb(var(--brand));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.lesson-link { color: rgb(var(--brand)); text-decoration: underline; }
+
+/* Video embed wrapper (inserted as raw HTML) */
+.lesson-video-wrapper,
+.lesson-content-html .lesson-video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  margin: 1em 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+}
+.lesson-video-wrapper iframe,
+.lesson-content-html .lesson-video-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
