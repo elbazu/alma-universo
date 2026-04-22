@@ -17,6 +17,9 @@ import { useCommunityData } from '@/context/CommunityDataContext'
 import { slugify } from '@/lib/community'
 import CategoriesPane from '@/components/community-settings/panes/CategoriesPane'
 import RulesPane from '@/components/community-settings/panes/RulesPane'
+import PricingPane from '@/components/community-settings/panes/PricingPane'
+import PluginsPane from '@/components/community-settings/panes/PluginsPane'
+import AffiliatesPane from '@/components/community-settings/panes/AffiliatesPane'
 
 const INPUT_CLASS =
   'w-full px-3 py-2 text-sm bg-surface-secondary border border-border rounded-lg ' +
@@ -46,9 +49,9 @@ const NAV: NavItem[] = [
   { key: 'rules',       label: 'Reglas',      icon: <BookOpen size={16} /> },
   // Sprint 3+ (locked)
   { key: 'payouts',     label: 'Cobros',      icon: <Wallet size={16} />,     locked: true },
-  { key: 'pricing',     label: 'Precios',     icon: <Tag size={16} />,        locked: true },
-  { key: 'affiliates',  label: 'Afiliados',   icon: <Users size={16} />,      locked: true },
-  { key: 'plugins',     label: 'Plugins',     icon: <Puzzle size={16} />,     locked: true },
+  { key: 'pricing',     label: 'Precios',     icon: <Tag size={16} /> },
+  { key: 'affiliates',  label: 'Afiliados',   icon: <Users size={16} /> },
+  { key: 'plugins',     label: 'Plugins',     icon: <Puzzle size={16} /> },
   // Sprint 2 — active
   { key: 'billing',     label: 'Facturación', icon: <CreditCard size={16} /> },
 ]
@@ -149,6 +152,9 @@ export default function CommunitySettingsModal({ open, onClose, initialPane = 'g
             {pane === 'categories' && <CategoriesPane />}
             {pane === 'rules'      && <RulesPane />}
             {pane === 'billing'    && <BillingPane />}
+            {pane === 'pricing'    && <PricingPane />}
+            {pane === 'affiliates' && <AffiliatesPane />}
+            {pane === 'plugins'    && <PluginsPane />}
             {NAV.find(n => n.key === pane)?.locked && <LockedPane label={PANE_TITLES[pane]} />}
           </div>
         </div>

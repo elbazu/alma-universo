@@ -20,6 +20,10 @@ export interface CommunitySettings {
   show_map_tab: boolean
   show_members_tab: boolean
   show_about_tab: boolean
+  // Sprint 3 — pricing & affiliates
+  pricing_model?: string
+  pricing_tiers?: string
+  affiliate_rate?: string
 }
 
 const SINGLETON_KEY = 'main'
@@ -73,6 +77,9 @@ function recordToSettings(rec: Record<string, unknown>): CommunitySettings {
     show_map_tab: Boolean(rec.show_map_tab),
     show_members_tab: rec.show_members_tab !== false,
     show_about_tab: rec.show_about_tab !== false,
+    pricing_model: (rec.pricing_model as string) || 'free',
+    pricing_tiers: (rec.pricing_tiers as string) || '',
+    affiliate_rate: (rec.affiliate_rate as string) || 'off',
   }
 }
 
