@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Leaflet map styles — must be global (cannot import from client component) */
+@import 'leaflet/dist/leaflet.css';
+
 /* ═══════════════════════════════════════════════════
    THEME TOKENS — Alma palette (terracotta + gold + cream)
    Colors declared as `R G B` triples so Tailwind's
