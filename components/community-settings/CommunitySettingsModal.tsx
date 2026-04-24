@@ -20,6 +20,8 @@ import RulesPane from '@/components/community-settings/panes/RulesPane'
 import PricingPane from '@/components/community-settings/panes/PricingPane'
 import PluginsPane from '@/components/community-settings/panes/PluginsPane'
 import AffiliatesPane from '@/components/community-settings/panes/AffiliatesPane'
+import DiscoveryPane from '@/components/community-settings/panes/DiscoveryPane'
+import InvitePane from '@/components/community-settings/panes/InvitePane'
 
 const INPUT_CLASS =
   'w-full px-3 py-2 text-sm bg-surface-secondary border border-border rounded-lg ' +
@@ -28,7 +30,7 @@ const INPUT_CLASS =
 
 type PaneKey =
   | 'general' | 'tabs' | 'categories' | 'rules' | 'billing'
-  | 'dashboard' | 'discovery' | 'payouts' | 'pricing' | 'affiliates' | 'plugins'
+  | 'dashboard' | 'discovery' | 'invite' | 'payouts' | 'pricing' | 'affiliates' | 'plugins'
 
 interface NavItem {
   key: PaneKey
@@ -40,7 +42,8 @@ interface NavItem {
 const NAV: NavItem[] = [
   // Sprint 3+ (locked)
   { key: 'dashboard',   label: 'Panel',       icon: <Home size={16} />,       locked: true },
-  { key: 'discovery',   label: 'Descubrir',   icon: <Compass size={16} />,    locked: true },
+  { key: 'discovery',   label: 'Descubrir',   icon: <Compass size={16} /> },
+  { key: 'invite',      label: 'Invitar',     icon: <Users size={16} /> },
   // Sprint 2 — active
   { key: 'general',     label: 'General',     icon: <Settings2 size={16} /> },
   { key: 'tabs',        label: 'Pestañas',    icon: <LayoutGrid size={16} /> },
@@ -59,6 +62,7 @@ const NAV: NavItem[] = [
 const PANE_TITLES: Record<PaneKey, string> = {
   dashboard:   'Panel',
   discovery:   'Descubrir',
+  invite:      'Invitar',
   general:     'General',
   tabs:        'Pestañas del hub',
   categories:  'Categorías',
@@ -155,6 +159,8 @@ export default function CommunitySettingsModal({ open, onClose, initialPane = 'g
             {pane === 'pricing'    && <PricingPane />}
             {pane === 'affiliates' && <AffiliatesPane />}
             {pane === 'plugins'    && <PluginsPane />}
+            {pane === 'discovery'  && <DiscoveryPane />}
+            {pane === 'invite'     && <InvitePane />}
             {NAV.find(n => n.key === pane)?.locked && <LockedPane label={PANE_TITLES[pane]} />}
           </div>
         </div>

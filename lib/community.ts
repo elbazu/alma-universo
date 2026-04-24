@@ -24,6 +24,11 @@ export interface CommunitySettings {
   pricing_model?: string
   pricing_tiers?: string
   affiliate_rate?: string
+  // Sprint 6 — discovery & invite
+  discovery_keywords?: string
+  is_listed?: boolean
+  has_published_course?: boolean
+  has_published_post?: boolean
 }
 
 const SINGLETON_KEY = 'main'
@@ -80,6 +85,10 @@ function recordToSettings(rec: Record<string, unknown>): CommunitySettings {
     pricing_model: (rec.pricing_model as string) || 'free',
     pricing_tiers: (rec.pricing_tiers as string) || '',
     affiliate_rate: (rec.affiliate_rate as string) || 'off',
+    discovery_keywords: (rec.discovery_keywords as string) || '',
+    is_listed: Boolean(rec.is_listed),
+    has_published_course: Boolean(rec.has_published_course),
+    has_published_post: Boolean(rec.has_published_post),
   }
 }
 
