@@ -1,45 +1,32 @@
+'use client'
+
+/**
+ * Calendar page — Sprint 6.5
+ *
+ * Two views toggled by icons in the header:
+ *   • Lista  — original card-based list (LayoutList icon)
+ *   • Mes    — month grid with Today button, prev/next nav, event pills
+ */
+
+import { useState, useMemo } from 'react'
 import Navbar from '@/components/layout/Navbar'
 import Sidebar from '@/components/layout/Sidebar'
 import eventsData from '@/content/events.json'
-import { Video, Calendar, Clock, Repeat, ExternalLink } from 'lucide-react'
+import {
+  Video, Calendar, Clock, Repeat, ExternalLink,
+  LayoutList, CalendarDays, ChevronLeft, ChevronRight,
+} from 'lucide-react'
 import type { Event } from '@/lib/types'
 
-const typeConfig = {
-  live:       { label: 'EN VIVO',   color: 'bg-red-500',   icon: Video },
-  meditation: { label: 'MEDITACIÓN', color: 'bg-purple-500', icon: Calendar },
-  workshop:   { label: 'TALLER',    color: 'bg-blue-500',  icon: Calendar },
+// ─── Shared config ─────────────────────────────────────────────────────────────
+
+const typeConfig: Record<string, { label: string; color: string; pill: string; icon: typeof Video }> = {
+  live:       { label: 'EN VIVO',    color: 'bg-red-500',    pill: 'bg-red-100 text-red-700',     icon: Video },
+  meditation: { label: 'MEDITACIÓN', color: 'bg-purple-500', pill: 'bg-purple-100 text-purple-700', icon: Calendar },
+  workshop:   { label: 'TALLER',     color: 'bg-blue-500',   pill: 'bg-blue-100 text-blue-700',    icon: Calendar },
 }
 
-export default function CalendarPage() {
-  const events = eventsData as Event[]
-
-  return (
-    <>
-      <Navbar />
-      <main className="max-w-6xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          <div className="flex-1 min-w-0">
-            <h1 className="font-display text-2xl font-semibold text-gray-900 mb-1">Calendario</h1>
-            <p className="text-sm text-gray-500 mb-6">Pr̳roximos eventos, clases en vivo y sesiones grupales.</p>
-
-            {events.length > 0 ? (
-              <div className="space-y-3">
-                {events.map(event => <EventCard key={event.id} event={event} />)}
-              </div>
-            ) : (
-              <div className="text-center py-16 text-gray-400">
-                <div className="text-4xl mb-3">🗓️</div>
-                <p className="font-medium">No hay eventos programados</p>
-                <p className="text-sm mt-1">Los próximos eventos aparecerán aquí.</p>
-              </div>
-            )}
-          </div>
-          <Sidebar />
-        </div>
-      </main>
-    </>
-  )
-}
+// ─── List view ────────────────────────────────────────────────────────────────
 
 function EventCard({ event }: { event: Event }) {
   const cfg = typeConfig[event.type] || typeConfig.live
@@ -66,7 +53,7 @@ function EventCard({ event }: { event: Event }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <span className={`text-[10px] font-bold text-white px-2 py-0.5 rounded ${cfg.color} flex items-center gap-1`}>
-            <span className="live-dot w-1.5 h-1.5 bg-white rounded-full inline-block" />
+            <span className="w-1.5 h-1.5 bg-white rounded-full inline-block" />
             {cfg.label}
           </span>
           {event.recurring && (
@@ -96,5 +83,243 @@ function EventCard({ event }: { event: Event }) {
         )}
       </div>
     </div>
+  )
+}
+
+// ─── Month grid view ──────────────────────────────────────────────────────────
+
+const WEEK_DAYS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+
+const MONTH_NAMES = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+]
+
+interface DayCell {
+  date: Date
+  isCurrentMonth: boolean
+  isToday: boolean
+  events: Event[]
+}
+
+function buildMonthGrid(year: number, month: number, events: Event[]): DayCell[] {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  // First day of the month (0=Sun … 6=Sat)
+  const firstDay = new Date(year, month, 1)
+  // Adjust to Mon=0 grid: Sunday becomes 6, Mon=0 …
+  let startOffset = firstDay.getDay() - 1
+  if (startOffset < 0) startOffset = 6
+
+  // Last day of the month
+  const lastDay = new Date(year, month + 1, 0)
+
+  // Build full 6-week grid (42 cells) starting from Mon before firstDay
+  const cells: DayCell[] = []
+  const cursor = new Date(firstDay)
+  cursor.setDate(cursor.getDate() - startOffset)
+
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(cursor)
+    d.setHours(0, 0, 0, 0)
+    const dayStr = d.toISOString().slice(0, 10)
+    cells.push({
+      date: d,
+      isCurrentMonth: d.getMonth() === month,
+      isToday: d.getTime() === today.getTime(),
+      events: events.filter(e => e.date === dayStr),
+    })
+    cursor.setDate(cursor.getDate() + 1)
+  }
+
+  // Trim trailing empty weeks
+  while (cells.length > 35 && cells.slice(-7).every(c => !c.isCurrentMonth)) {
+    cells.splice(-7)
+  }
+
+  return cells
+}
+
+function MonthGrid({ events }: { events: Event[] }) {
+  const today = new Date()
+  const [year,  setYear]  = useState(today.getFullYear())
+  const [month, setMonth] = useState(today.getMonth())
+
+  const cells = useMemo(() => buildMonthGrid(year, month, events), [year, month, events])
+
+  function prevMonth() {
+    if (month === 0) { setYear(y => y - 1); setMonth(11) }
+    else setMonth(m => m - 1)
+  }
+  function nextMonth() {
+    if (month === 11) { setYear(y => y + 1); setMonth(0) }
+    else setMonth(m => m + 1)
+  }
+  function goToday() {
+    setYear(today.getFullYear())
+    setMonth(today.getMonth())
+  }
+
+  return (
+    <div className="space-y-3">
+      {/* Month navigation */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={goToday}
+          className="px-3 py-1.5 text-xs font-medium rounded-lg border border-border text-body hover:border-brand-400 hover:text-brand-600 transition"
+        >
+          Hoy
+        </button>
+        <button onClick={prevMonth} className="p-1.5 rounded-lg border border-border text-body hover:border-brand-400 hover:text-brand-600 transition">
+          <ChevronLeft size={15} />
+        </button>
+        <button onClick={nextMonth} className="p-1.5 rounded-lg border border-border text-body hover:border-brand-400 hover:text-brand-600 transition">
+          <ChevronRight size={15} />
+        </button>
+        <span className="text-sm font-semibold text-body ml-1">
+          {MONTH_NAMES[month]} {year}
+        </span>
+      </div>
+
+      {/* Grid */}
+      <div className="rounded-2xl border border-border overflow-hidden bg-surface">
+        {/* Day headers */}
+        <div className="grid grid-cols-7 border-b border-border">
+          {WEEK_DAYS.map(d => (
+            <div key={d} className="py-2 text-center text-xs font-semibold text-body-muted uppercase tracking-wide">
+              {d}
+            </div>
+          ))}
+        </div>
+
+        {/* Day cells */}
+        <div className="grid grid-cols-7">
+          {cells.map((cell, i) => {
+            const isLastRow = i >= cells.length - 7
+            const isLastCol = (i + 1) % 7 === 0
+
+            return (
+              <div
+                key={i}
+                className={[
+                  'min-h-[90px] p-1.5 relative',
+                  !isLastRow ? 'border-b border-border' : '',
+                  !isLastCol ? 'border-r border-border' : '',
+                  !cell.isCurrentMonth ? 'bg-gray-50/50' : '',
+                ].join(' ')}
+              >
+                {/* Day number */}
+                <span className={[
+                  'inline-flex w-6 h-6 items-center justify-center rounded-full text-xs font-medium mb-1',
+                  cell.isToday
+                    ? 'bg-brand-500 text-white'
+                    : cell.isCurrentMonth
+                      ? 'text-body'
+                      : 'text-body-muted',
+                ].join(' ')}>
+                  {cell.date.getDate()}
+                </span>
+
+                {/* Event pills */}
+                <div className="space-y-0.5">
+                  {cell.events.slice(0, 3).map(ev => {
+                    const cfg = typeConfig[ev.type] || typeConfig.live
+                    return (
+                      <div
+                        key={ev.id}
+                        className={`px-1.5 py-0.5 rounded text-[10px] font-medium truncate leading-tight ${cfg.pill}`}
+                        title={ev.title}
+                      >
+                        {ev.time} {ev.title}
+                      </div>
+                    )
+                  })}
+                  {cell.events.length > 3 && (
+                    <div className="text-[10px] text-body-muted pl-1">
+                      +{cell.events.length - 3} más
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+type ViewMode = 'list' | 'grid'
+
+export default function CalendarPage() {
+  const events = eventsData as Event[]
+  const [view, setView] = useState<ViewMode>('list')
+
+  return (
+    <>
+      <Navbar />
+      <main className="max-w-6xl mx-auto px-4 py-6">
+        <div className="flex gap-6">
+          <div className="flex-1 min-w-0">
+
+            {/* Header with view toggle */}
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h1 className="font-display text-2xl font-semibold text-gray-900 mb-1">Calendario</h1>
+                <p className="text-sm text-gray-500">Próximos eventos, clases en vivo y sesiones grupales.</p>
+              </div>
+
+              {/* Toggle buttons */}
+              <div className="flex items-center gap-1 p-1 bg-surface border border-border rounded-xl mt-1">
+                <button
+                  onClick={() => setView('list')}
+                  title="Vista lista"
+                  className={`p-2 rounded-lg transition ${
+                    view === 'list'
+                      ? 'bg-brand-500 text-white shadow-sm'
+                      : 'text-body-muted hover:text-body'
+                  }`}
+                >
+                  <LayoutList size={16} />
+                </button>
+                <button
+                  onClick={() => setView('grid')}
+                  title="Vista mensual"
+                  className={`p-2 rounded-lg transition ${
+                    view === 'grid'
+                      ? 'bg-brand-500 text-white shadow-sm'
+                      : 'text-body-muted hover:text-body'
+                  }`}
+                >
+                  <CalendarDays size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            {view === 'list' ? (
+              events.length > 0 ? (
+                <div className="space-y-3">
+                  {events.map(event => <EventCard key={event.id} event={event} />)}
+                </div>
+              ) : (
+                <div className="text-center py-16 text-gray-400">
+                  <div className="text-4xl mb-3">🗓️</div>
+                  <p className="font-medium">No hay eventos programados</p>
+                  <p className="text-sm mt-1">Los próximos eventos aparecerán aquí.</p>
+                </div>
+              )
+            ) : (
+              <MonthGrid events={events} />
+            )}
+          </div>
+
+          <Sidebar />
+        </div>
+      </main>
+    </>
   )
 }
