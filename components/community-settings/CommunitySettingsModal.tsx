@@ -11,7 +11,7 @@ import { useEffect, useRef, useState, ReactNode, ChangeEvent } from 'react'
 import {
   X, Home, Compass, Settings2, Wallet, Tag, Users, Puzzle,
   Shield, LayoutGrid, CreditCard, AlertTriangle, Loader2, Check,
-  List, BookOpen,
+  List, BookOpen, CalendarDays,
 } from 'lucide-react'
 import { useCommunityData } from '@/context/CommunityDataContext'
 import { slugify } from '@/lib/community'
@@ -22,6 +22,7 @@ import PluginsPane from '@/components/community-settings/panes/PluginsPane'
 import AffiliatesPane from '@/components/community-settings/panes/AffiliatesPane'
 import DiscoveryPane from '@/components/community-settings/panes/DiscoveryPane'
 import InvitePane from '@/components/community-settings/panes/InvitePane'
+import EventsPane from '@/components/community-settings/panes/EventsPane'
 
 const INPUT_CLASS =
   'w-full px-3 py-2 text-sm bg-surface-secondary border border-border rounded-lg ' +
@@ -31,6 +32,7 @@ const INPUT_CLASS =
 type PaneKey =
   | 'general' | 'tabs' | 'categories' | 'rules' | 'billing'
   | 'dashboard' | 'discovery' | 'invite' | 'payouts' | 'pricing' | 'affiliates' | 'plugins'
+  | 'events'
 
 interface NavItem {
   key: PaneKey
@@ -50,6 +52,7 @@ const NAV: NavItem[] = [
   // Sprint 1 — NEW
   { key: 'categories',  label: 'Categorías',  icon: <List size={16} /> },
   { key: 'rules',       label: 'Reglas',      icon: <BookOpen size={16} /> },
+  { key: 'events',      label: 'Eventos',     icon: <CalendarDays size={16} /> },
   // Sprint 3+ (locked)
   { key: 'payouts',     label: 'Cobros',      icon: <Wallet size={16} />,     locked: true },
   { key: 'pricing',     label: 'Precios',     icon: <Tag size={16} /> },
@@ -67,6 +70,7 @@ const PANE_TITLES: Record<PaneKey, string> = {
   tabs:        'Pestañas del hub',
   categories:  'Categorías',
   rules:       'Reglas',
+  events:      'Eventos',
   payouts:     'Cobros',
   pricing:     'Precios',
   affiliates:  'Afiliados',
@@ -161,6 +165,7 @@ export default function CommunitySettingsModal({ open, onClose, initialPane = 'g
             {pane === 'plugins'    && <PluginsPane />}
             {pane === 'discovery'  && <DiscoveryPane />}
             {pane === 'invite'     && <InvitePane />}
+            {pane === 'events'     && <EventsPane />}
             {NAV.find(n => n.key === pane)?.locked && <LockedPane label={PANE_TITLES[pane]} />}
           </div>
         </div>

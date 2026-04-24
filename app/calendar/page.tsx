@@ -1,22 +1,43 @@
 'use client'
 
 /**
- * Calendar page — Sprint 6.5
+ * Calendar page — Sprint 7
  *
  * Two views toggled by icons in the header:
  *   • Lista  — original card-based list (LayoutList icon)
  *   • Mes    — month grid with Today button, prev/next nav, event pills
+ *
+ * Data: reads from PocketBase `events` collection; falls back to
+ * content/events.json when PB is unreachable or collection missing.
  */
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Navbar from '@/components/layout/Navbar'
 import Sidebar from '@/components/layout/Sidebar'
 import eventsData from '@/content/events.json'
+import { fetchEvents, type CommunityEvent } from '@/lib/events'
 import {
   Video, Calendar, Clock, Repeat, ExternalLink,
   LayoutList, CalendarDays, ChevronLeft, ChevronRight,
 } from 'lucide-react'
 import type { Event } from '@/lib/types'
+
+// Map CommunityEvent (PB) → Event (legacy JSON shape) for unified rendering
+function pbToEvent(e: CommunityEvent): Event {
+  return {
+    id:           e.id ?? e.title,
+    title:        e.title,
+    description:  e.description,
+    date:         e.date,
+    time:         e.time,
+    timezone:     e.timezone,
+    duration:     e.duration,
+    type:         e.type,
+    meetingUrl:   e.meeting_url,
+    recurring:    e.recurring,
+    recurringDay: e.recurring_day,
+  }
+}
 
 // ─── Shared config ─────────────────────────────────────────────────────────────
 
@@ -255,8 +276,15 @@ function MonthGrid({ events }: { events: Event[] }) {
 type ViewMode = 'list' | 'grid'
 
 export default function CalendarPage() {
-  const events = eventsData as Event[]
+  const [events, setEvents] = useState<Event[]>(eventsData as Event[])
   const [view, setView] = useState<ViewMode>('list')
+
+  // Load from PB on mount; fall back to JSON if PB unavailable
+  useEffect(() => {
+    fetchEvents().then(pbEvents => {
+      if (pbEvents.length > 0) setEvents(pbEvents.map(pbToEvent))
+    })
+  }, [])
 
   return (
     <>
