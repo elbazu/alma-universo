@@ -27,8 +27,9 @@ module.exports = {
         }
       },
       fontFamily: {
-        display: ['var(--font-display)', 'Georgia', 'serif'],
-        body: ['var(--font-body)', 'system-ui', 'sans-serif'],
+        display: ['Cormorant Garamond', 'Georgia', 'serif'],
+        cinzel:  ['Cinzel', 'serif'],
+        sans:    ['Jost', 'system-ui', 'sans-serif'],
       },
     },
   },
