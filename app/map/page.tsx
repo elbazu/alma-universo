@@ -14,8 +14,7 @@
  */
 
 import dynamic from 'next/dynamic'
-import Navbar from '@/components/layout/Navbar'
-import Sidebar from '@/components/layout/Sidebar'
+import AppShell from '@/components/layout/AppShell'
 
 // Leaflet must be loaded client-side only — no SSR
 const MemberMap = dynamic(() => import('@/components/map/MemberMap'), {
@@ -33,20 +32,14 @@ const MemberMap = dynamic(() => import('@/components/map/MemberMap'), {
 
 export default function MapPage() {
   return (
-    <>
-      <Navbar />
-      <main className="max-w-6xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          <div className="flex-1 min-w-0">
-            <h1 className="font-display text-2xl font-semibold text-gray-900 mb-1">Mapa</h1>
-            <p className="text-sm text-gray-500 mb-6">
-              Miembros de la comunidad alrededor del mundo.
-            </p>
-            <MemberMap />
-          </div>
-          <Sidebar />
-        </div>
-      </main>
-    </>
+    <AppShell>
+      <div className="max-w-4xl mx-auto px-6 py-8">
+        <h1 className="font-display text-3xl font-light mb-1" style={{ color: '#2C1F0E' }}>Mapa</h1>
+        <p className="text-sm mb-6" style={{ color: '#6B4F35' }}>
+          Miembros de la comunidad alrededor del mundo.
+        </p>
+        <MemberMap />
+      </div>
+    </AppShell>
   )
 }

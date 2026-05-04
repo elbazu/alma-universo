@@ -15,7 +15,7 @@ import {
   PlayCircle, Clock, Lock, ChevronDown, Plus, Pencil, Trash2,
   Loader2, Check, X, BookOpen, AlertCircle, Eye, EyeOff,
 } from 'lucide-react'
-import Navbar from '@/components/layout/Navbar'
+import AppShell from '@/components/layout/AppShell'
 import LessonEditModal from '@/components/classroom/LessonEditModal'
 import { getPb } from '@/lib/pocketbase'
 import { isAdmin } from '@/lib/admin'
@@ -610,24 +610,24 @@ export default function ClassroomPage() {
   }
 
   return (
-    <>
-      <Navbar />
-      <main className="max-w-6xl mx-auto px-4 py-8">
+    <AppShell>
+      <div className="max-w-5xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="font-display text-2xl font-semibold text-gray-900 flex items-center gap-2">
-              <BookOpen size={22} className="text-brand-500" />
-              Classroom
+            <h1 className="font-display text-3xl font-light flex items-center gap-2" style={{ color: '#2C1F0E' }}>
+              <BookOpen size={22} style={{ color: '#C8942A' }} />
+              Mis Cursos
             </h1>
-            <p className="text-sm text-body-muted mt-0.5">
+            <p className="text-sm mt-0.5" style={{ color: '#6B4F35' }}>
               {admin ? 'Administra tus cursos, módulos y lecciones.' : 'Tu espacio de aprendizaje.'}
             </p>
           </div>
           {admin && (
             <button
               onClick={() => setShowNewCourse(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-500 text-white text-sm font-medium hover:bg-brand-600 transition"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition"
+              style={{ background: 'linear-gradient(135deg, #C8942A, #E07B2A)' }}
             >
               <Plus size={15} /> Nuevo curso
             </button>
@@ -654,7 +654,8 @@ export default function ClassroomPage() {
             {admin && (
               <button
                 onClick={() => setShowNewCourse(true)}
-                className="mt-5 px-5 py-2.5 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 transition"
+                className="mt-5 px-5 py-2.5 text-sm font-medium rounded-lg text-white transition"
+                style={{ background: 'linear-gradient(135deg, #C8942A, #E07B2A)' }}
               >
                 Crear el primero
               </button>
@@ -674,7 +675,7 @@ export default function ClassroomPage() {
             ))}
           </div>
         )}
-      </main>
+      </div>
 
       {showNewCourse && (
         <NewCourseModal
@@ -682,6 +683,6 @@ export default function ClassroomPage() {
           onCreate={course => setCourses(prev => [...prev, course])}
         />
       )}
-    </>
+    </AppShell>
   )
 }

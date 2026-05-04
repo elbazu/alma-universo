@@ -12,8 +12,7 @@
  */
 
 import { useState, useMemo, useEffect } from 'react'
-import Navbar from '@/components/layout/Navbar'
-import Sidebar from '@/components/layout/Sidebar'
+import AppShell from '@/components/layout/AppShell'
 import eventsData from '@/content/events.json'
 import { fetchEvents, type CommunityEvent } from '@/lib/events'
 import {
@@ -287,67 +286,60 @@ export default function CalendarPage() {
   }, [])
 
   return (
-    <>
-      <Navbar />
-      <main className="max-w-6xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          <div className="flex-1 min-w-0">
+    <AppShell>
+      <div className="max-w-4xl mx-auto px-6 py-8">
 
-            {/* Header with view toggle */}
-            <div className="flex items-start justify-between mb-6">
-              <div>
-                <h1 className="font-display text-2xl font-semibold text-gray-900 mb-1">Calendario</h1>
-                <p className="text-sm text-gray-500">Próximos eventos, clases en vivo y sesiones grupales.</p>
-              </div>
-
-              {/* Toggle buttons */}
-              <div className="flex items-center gap-1 p-1 bg-surface border border-border rounded-xl mt-1">
-                <button
-                  onClick={() => setView('list')}
-                  title="Vista lista"
-                  className={`p-2 rounded-lg transition ${
-                    view === 'list'
-                      ? 'bg-brand-500 text-white shadow-sm'
-                      : 'text-body-muted hover:text-body'
-                  }`}
-                >
-                  <LayoutList size={16} />
-                </button>
-                <button
-                  onClick={() => setView('grid')}
-                  title="Vista mensual"
-                  className={`p-2 rounded-lg transition ${
-                    view === 'grid'
-                      ? 'bg-brand-500 text-white shadow-sm'
-                      : 'text-body-muted hover:text-body'
-                  }`}
-                >
-                  <CalendarDays size={16} />
-                </button>
-              </div>
-            </div>
-
-            {/* Content */}
-            {view === 'list' ? (
-              events.length > 0 ? (
-                <div className="space-y-3">
-                  {events.map(event => <EventCard key={event.id} event={event} />)}
-                </div>
-              ) : (
-                <div className="text-center py-16 text-gray-400">
-                  <div className="text-4xl mb-3">🗓️</div>
-                  <p className="font-medium">No hay eventos programados</p>
-                  <p className="text-sm mt-1">Los próximos eventos aparecerán aquí.</p>
-                </div>
-              )
-            ) : (
-              <MonthGrid events={events} />
-            )}
+        {/* Header with view toggle */}
+        <div className="flex items-start justify-between mb-6">
+          <div>
+            <h1 className="font-display text-3xl font-light mb-1" style={{ color: '#2C1F0E' }}>Calendario</h1>
+            <p className="text-sm" style={{ color: '#6B4F35' }}>Próximos eventos, clases en vivo y sesiones grupales.</p>
           </div>
 
-          <Sidebar />
+          {/* Toggle buttons */}
+          <div className="flex items-center gap-1 p-1 bg-surface border border-border rounded-xl mt-1">
+            <button
+              onClick={() => setView('list')}
+              title="Vista lista"
+              className={`p-2 rounded-lg transition ${
+                view === 'list'
+                  ? 'bg-brand-500 text-white shadow-sm'
+                  : 'text-body-muted hover:text-body'
+              }`}
+            >
+              <LayoutList size={16} />
+            </button>
+            <button
+              onClick={() => setView('grid')}
+              title="Vista mensual"
+              className={`p-2 rounded-lg transition ${
+                view === 'grid'
+                  ? 'bg-brand-500 text-white shadow-sm'
+                  : 'text-body-muted hover:text-body'
+              }`}
+            >
+              <CalendarDays size={16} />
+            </button>
+          </div>
         </div>
-      </main>
-    </>
+
+        {/* Content */}
+        {view === 'list' ? (
+          events.length > 0 ? (
+            <div className="space-y-3">
+              {events.map(event => <EventCard key={event.id} event={event} />)}
+            </div>
+          ) : (
+            <div className="text-center py-16 text-gray-400">
+              <div className="text-4xl mb-3">🗓️</div>
+              <p className="font-medium">No hay eventos programados</p>
+              <p className="text-sm mt-1">Los próximos eventos aparecerán aquí.</p>
+            </div>
+          )
+        ) : (
+          <MonthGrid events={events} />
+        )}
+      </div>
+    </AppShell>
   )
 }
