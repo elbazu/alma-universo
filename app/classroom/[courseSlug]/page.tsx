@@ -20,7 +20,7 @@ import {
   ExternalLink, Loader2, Lock, PlayCircle, MoreHorizontal,
   Pencil, Plus, FolderPlus,
 } from 'lucide-react'
-import Navbar from '@/components/layout/Navbar'
+import AppShell from '@/components/layout/AppShell'
 import LessonEditor from '@/components/classroom/LessonEditor'
 import { getPb } from '@/lib/pocketbase'
 import { isAdmin } from '@/lib/admin'
@@ -488,33 +488,30 @@ export default function LessonPlayerPage() {
   // ── Render ────────────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <>
-        <Navbar />
+      <AppShell>
         <div className="flex items-center justify-center h-[60vh]">
           <Loader2 size={28} className="animate-spin text-brand-400" />
         </div>
-      </>
+      </AppShell>
     )
   }
 
   if (notFound || !course) {
     return (
-      <>
-        <Navbar />
+      <AppShell>
         <div className="flex flex-col items-center justify-center h-[60vh] text-center gap-3">
           <p className="text-lg font-semibold text-body">Curso no encontrado</p>
           <button onClick={() => router.push('/classroom')} className="text-sm text-brand-600 hover:underline">
             ← Volver al Classroom
           </button>
         </div>
-      </>
+      </AppShell>
     )
   }
 
   return (
-    <>
-      <Navbar />
-      <div className="flex h-[calc(100vh-60px)] overflow-hidden">
+    <AppShell>
+      <div className="flex h-screen overflow-hidden">
 
         {/* ── Left nav panel ───────────────────────────────────────────── */}
         <aside className="w-72 flex-shrink-0 border-r border-border bg-surface flex flex-col overflow-hidden">
@@ -624,6 +621,6 @@ export default function LessonPlayerPage() {
         </main>
 
       </div>
-    </>
+    </AppShell>
   )
 }

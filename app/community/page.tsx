@@ -9,8 +9,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { MessageCircle, ThumbsUp, Pin, Loader2, AlertCircle } from 'lucide-react'
-import Navbar from '@/components/layout/Navbar'
-import Sidebar from '@/components/layout/Sidebar'
+import AppShell from '@/components/layout/AppShell'
 import PostComposer from '@/components/community/PostComposer'
 import { listCommunityPosts } from '@/lib/posts'
 import { listHubCategories } from '@/lib/categories'
@@ -164,12 +163,10 @@ export default function CommunityPage() {
   }, [loadData])
 
   return (
-    <>
-      <Navbar />
-      <main className="max-w-6xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          {/* Main column */}
-          <div className="flex-1 min-w-0 space-y-4">
+    <AppShell>
+      <main className="max-w-3xl mx-auto px-6 py-8">
+        <h1 className="font-display text-3xl font-light mb-6" style={{ color: '#2C1F0E' }}>Comunidad</h1>
+        <div className="space-y-4">
 
             {/* Post composer — only for logged-in users */}
             {user && (
@@ -237,11 +234,8 @@ export default function CommunityPage() {
                 ))}
               </div>
             )}
-          </div>
-
-          <Sidebar />
         </div>
       </main>
-    </>
+    </AppShell>
   )
 }

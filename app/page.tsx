@@ -12,7 +12,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (!isLoading && user) {
-      router.push('/community')
+      router.push('/home')
     }
   }, [user, isLoading, router])
 
