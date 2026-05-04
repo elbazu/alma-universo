@@ -3,6 +3,7 @@
 /**
  * LeftNav — permanent left sidebar navigation for all interior pages.
  * Replaces the top Navbar. Warm ivory/gold palette matching the prototype.
+ * Sprint 10: language toggle (ES / EN) added above user footer.
  */
 
 import Link from 'next/link'
@@ -12,6 +13,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useCommunitySettings } from '@/context/CommunityDataContext'
 import { useCommunitySettingsModal } from '@/context/CommunitySettingsContext'
 import { useProfile } from '@/context/ProfileContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { isAdmin } from '@/lib/admin'
 import { displayName as profileDisplayName } from '@/lib/profile'
 import {
@@ -30,44 +32,6 @@ const C = {
   activeBg:   '#FFF0D6',
   hoverBg:    '#FFF4E6',
 }
-
-interface NavItem {
-  label: string
-  href: string
-  icon: React.ReactNode
-}
-interface NavSection {
-  section: string
-  items: NavItem[]
-}
-
-const NAV: NavSection[] = [
-  {
-    section: 'PRINCIPAL',
-    items: [
-      { label: 'Inicio',        href: '/home',      icon: <Home size={16} /> },
-      { label: 'Mis Cursos',    href: '/classroom', icon: <BookOpen size={16} /> },
-      { label: 'Mis Descargas', href: '/downloads', icon: <Download size={16} /> },
-      { label: 'Agenda',        href: '/calendar',  icon: <CalendarDays size={16} /> },
-    ],
-  },
-  {
-    section: 'COMUNIDAD',
-    items: [
-      { label: 'Comunidad', href: '/community', icon: <MessageCircle size={16} /> },
-      { label: 'Mapa',      href: '/map',        icon: <Map size={16} /> },
-      { label: 'Miembros',  href: '/members',    icon: <Users size={16} /> },
-    ],
-  },
-  {
-    section: 'CUENTA',
-    items: [
-      { label: 'Mi Perfil',     href: '/members',  icon: <User size={16} /> },
-      { label: 'Configuración', href: '/settings', icon: <Settings size={16} /> },
-      { label: 'Acerca de',     href: '/about',    icon: <Info size={16} /> },
-    ],
-  },
-]
 
 // ─── MetatronCube mini mark ───────────────────────────────────────────────────
 
@@ -92,14 +56,51 @@ function MiniMark() {
   )
 }
 
+// ─── Language toggle pill ─────────────────────────────────────────────────────
+
+function LangToggle() {
+  const { lang, setLang } = useLanguage()
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 4,
+      padding: '6px 10px', marginBottom: 10,
+    }}>
+      <span style={{ fontSize: 10, color: C.textDim, fontFamily: 'Cinzel, serif',
+        letterSpacing: '0.1em', marginRight: 6 }}>
+        IDIOMA
+      </span>
+      <div style={{
+        display: 'flex', background: '#F0E8D8', borderRadius: 20,
+        padding: 2, gap: 2,
+      }}>
+        {(['es', 'en'] as const).map(l => (
+          <button
+            key={l}
+            onClick={() => setLang(l)}
+            style={{
+              padding: '3px 10px', borderRadius: 16, border: 'none', cursor: 'pointer',
+              fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', transition: 'all .15s',
+              background: lang === l ? C.gold : 'transparent',
+              color: lang === l ? 'white' : C.textDim,
+              fontFamily: "'Jost', sans-serif",
+            }}
+          >
+            {l.toUpperCase()}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ─── Sidebar content ──────────────────────────────────────────────────────────
 
 function SidebarContent({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname()
   const { user, signOut } = useAuth()
-  const community = useCommunitySettings()
   const { openCommunitySettings } = useCommunitySettingsModal()
   const { profile } = useProfile()
+  const { t } = useLanguage()
   const userIsAdmin = isAdmin(user)
 
   const displayName = profileDisplayName(
@@ -113,6 +114,34 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
     if (href === '/home') return pathname === '/home' || pathname === '/'
     return pathname === href || pathname.startsWith(href + '/')
   }
+
+  const NAV_SECTIONS = [
+    {
+      sectionKey: 'nav_section_principal',
+      items: [
+        { labelKey: 'nav_home',      href: '/home',      icon: <Home size={16} /> },
+        { labelKey: 'nav_courses',   href: '/classroom', icon: <BookOpen size={16} /> },
+        { labelKey: 'nav_downloads', href: '/downloads', icon: <Download size={16} /> },
+        { labelKey: 'nav_calendar',  href: '/calendar',  icon: <CalendarDays size={16} /> },
+      ],
+    },
+    {
+      sectionKey: 'nav_section_comunidad',
+      items: [
+        { labelKey: 'nav_community', href: '/community', icon: <MessageCircle size={16} /> },
+        { labelKey: 'nav_map',       href: '/map',       icon: <Map size={16} /> },
+        { labelKey: 'nav_members',   href: '/members',   icon: <Users size={16} /> },
+      ],
+    },
+    {
+      sectionKey: 'nav_section_cuenta',
+      items: [
+        { labelKey: 'nav_profile',   href: '/members',  icon: <User size={16} /> },
+        { labelKey: 'nav_settings',  href: '/settings', icon: <Settings size={16} /> },
+        { labelKey: 'nav_about',     href: '/about',    icon: <Info size={16} /> },
+      ],
+    },
+  ]
 
   return (
     <div style={{
@@ -143,13 +172,13 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
       {/* Nav sections */}
       <nav style={{ flex: 1, overflowY: 'auto', padding: '12px 10px 8px' }}>
-        {NAV.map(({ section, items }) => (
-          <div key={section} style={{ marginBottom: 20 }}>
+        {NAV_SECTIONS.map(({ sectionKey, items }) => (
+          <div key={sectionKey} style={{ marginBottom: 20 }}>
             <div style={{ fontFamily: 'Cinzel, serif', fontSize: 9, letterSpacing: '0.14em',
               color: C.textDim, padding: '0 8px 6px', textTransform: 'uppercase' }}>
-              {section}
+              {t(sectionKey)}
             </div>
-            {items.map(({ label, href, icon }) => {
+            {items.map(({ labelKey, href, icon }) => {
               const active = isActive(href)
               return (
                 <Link key={href} href={href} onClick={onClose}
@@ -170,7 +199,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                   }}
                 >
                   <span style={{ opacity: active ? 1 : 0.65 }}>{icon}</span>
-                  {label}
+                  {t(labelKey)}
                 </Link>
               )
             })}
@@ -182,7 +211,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
           <div style={{ marginBottom: 8 }}>
             <div style={{ fontFamily: 'Cinzel, serif', fontSize: 9, letterSpacing: '0.14em',
               color: C.textDim, padding: '0 8px 6px', textTransform: 'uppercase' }}>
-              ADMIN
+              {t('nav_section_admin')}
             </div>
             <button onClick={() => openCommunitySettings('general')}
               style={{ display: 'flex', alignItems: 'center', gap: 10,
@@ -194,50 +223,53 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >
               <span style={{ opacity: 0.65 }}><Settings2 size={16} /></span>
-              Configurar comunidad
+              {t('nav_admin_community')}
             </button>
           </div>
         )}
       </nav>
 
-      {/* User footer */}
-      <div style={{ borderTop: `1px solid ${C.border}`, padding: '12px 14px', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-            background: `linear-gradient(135deg, ${C.gold}, ${C.amber})`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'white', fontSize: 13, fontWeight: 600, overflow: 'hidden',
-          }}>
-            {avatarUrl
-              // eslint-disable-next-line @next/next/no-img-element
-              ? <img src={avatarUrl} alt={displayName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              : initial
-            }
-          </div>
-          <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 12, fontWeight: 500, color: C.text,
-              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {displayName}
+      {/* Language toggle + User footer */}
+      <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 10, flexShrink: 0 }}>
+        <LangToggle />
+        <div style={{ padding: '0 14px 12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+              background: `linear-gradient(135deg, ${C.gold}, ${C.amber})`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'white', fontSize: 13, fontWeight: 600, overflow: 'hidden',
+            }}>
+              {avatarUrl
+                // eslint-disable-next-line @next/next/no-img-element
+                ? <img src={avatarUrl} alt={displayName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                : initial
+              }
             </div>
-            <div style={{ fontSize: 11, color: C.textDim }}>
-              {userIsAdmin ? 'Admin' : 'Miembro'}
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: 12, fontWeight: 500, color: C.text,
+                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {displayName}
+              </div>
+              <div style={{ fontSize: 11, color: C.textDim }}>
+                {userIsAdmin ? t('nav_admin_badge') : t('nav_member_badge')}
+              </div>
             </div>
           </div>
+          <button onClick={signOut}
+            style={{
+              width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              gap: 8, padding: '7px 12px', borderRadius: 10, border: `1px solid ${C.border}`,
+              background: 'transparent', cursor: 'pointer', color: C.textMid,
+              fontSize: 12, fontFamily: "'Jost', sans-serif", transition: 'all .15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = C.gold; e.currentTarget.style.color = C.gold }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textMid }}
+          >
+            <LogOut size={13} />
+            {t('nav_signout')}
+          </button>
         </div>
-        <button onClick={signOut}
-          style={{
-            width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            gap: 8, padding: '7px 12px', borderRadius: 10, border: `1px solid ${C.border}`,
-            background: 'transparent', cursor: 'pointer', color: C.textMid,
-            fontSize: 12, fontFamily: "'Jost', sans-serif", transition: 'all .15s',
-          }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = C.gold; e.currentTarget.style.color = C.gold }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textMid }}
-        >
-          <LogOut size={13} />
-          Cerrar sesión
-        </button>
       </div>
     </div>
   )

@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation'
 import AppShell from '@/components/layout/AppShell'
 import { useAuth } from '@/context/AuthContext'
 import { useProfile } from '@/context/ProfileContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { displayName as profileDisplayName } from '@/lib/profile'
 import { listPublishedCourses } from '@/lib/classroom-crud'
 
@@ -44,6 +45,7 @@ const C = {
 interface Course {
   id: string
   title: string
+  titleKey?: string   // translation key for static courses
   category: string
   tag: string
   tagColor: string
@@ -55,6 +57,7 @@ interface Course {
   priceLabel: string
   duration: string
   desc: string
+  descKey?: string    // translation key for static courses
   enrolled: boolean
   slug?: string
 }
@@ -62,6 +65,7 @@ interface Course {
 const STATIC_COURSES: Course[] = [
   {
     id: 'nutricion', title: 'Nutrición Alineada a Chakras',
+    titleKey: 'course_nutricion_title', descKey: 'course_nutricion_desc',
     category: 'Nutrición', tag: 'POPULAR',
     tagColor: '#C4587A', tagBg: '#FCEEF3',
     accent: '#E07B2A', accentPale: '#FFF0E0',
@@ -72,6 +76,7 @@ const STATIC_COURSES: Course[] = [
   },
   {
     id: 'cristales', title: 'Cristaloterapia: Sanación con Piedras',
+    titleKey: 'course_cristales_title', descKey: 'course_cristales_desc',
     category: 'Cristales', tag: 'NUEVO',
     tagColor: '#3A8C8C', tagBg: '#E6F4F4',
     accent: '#3A8C8C', accentPale: '#E6F4F4',
@@ -82,6 +87,7 @@ const STATIC_COURSES: Course[] = [
   },
   {
     id: 'meditacion', title: 'Meditación Theta y Ondas Cerebrales',
+    titleKey: 'course_meditacion_title', descKey: 'course_meditacion_desc',
     category: 'Meditación', tag: 'EN VIVO',
     tagColor: '#7B6BAA', tagBg: '#EEE9F8',
     accent: '#7B6BAA', accentPale: '#EEE9F8',
@@ -92,6 +98,7 @@ const STATIC_COURSES: Course[] = [
   },
   {
     id: 'geometria', title: 'Geometría Sagrada Aplicada',
+    titleKey: 'course_geometria_title', descKey: 'course_geometria_desc',
     category: 'Espiritualidad', tag: 'AVANZADO',
     tagColor: '#C8942A', tagBg: '#FDE9A2',
     accent: '#C8942A', accentPale: '#FDE9A2',
@@ -102,6 +109,7 @@ const STATIC_COURSES: Course[] = [
   },
   {
     id: 'luna', title: 'Ritual de Luna: Ciclos y Magia',
+    titleKey: 'course_luna_title', descKey: 'course_luna_desc',
     category: 'Luna', tag: 'GRATIS',
     tagColor: '#4A8C5C', tagBg: '#E8F5ED',
     accent: '#4A8C5C', accentPale: '#E8F5ED',
@@ -112,6 +120,7 @@ const STATIC_COURSES: Course[] = [
   },
   {
     id: 'retiro', title: 'Despertar del Alma: Retiro Online',
+    titleKey: 'course_retiro_title', descKey: 'course_retiro_desc',
     category: 'Retiro', tag: 'DESTACADO',
     tagColor: '#C4587A', tagBg: '#FCEEF3',
     accent: '#C4587A', accentPale: '#FCEEF3',
@@ -160,6 +169,8 @@ function MetatronMini({ size = 120, opacity = 0.12 }: { size?: number; opacity?:
 
 function CourseCard({ course, onClick }: { course: Course; onClick: (c: Course) => void }) {
   const [hover, setHover] = useState(false)
+  const { t } = useLanguage()
+  const courseTitle = course.titleKey ? t(course.titleKey) : course.title
   return (
     <div
       onClick={() => onClick(course)}
@@ -206,7 +217,7 @@ function CourseCard({ course, onClick }: { course: Course; onClick: (c: Course) 
             fontSize: 10, fontFamily: 'Cinzel, serif', letterSpacing: '0.08em',
             border: `1px solid ${C.green}33`, zIndex: 2,
           }}>
-            ✓ Inscrito
+            {t('home_enrolled_badge')}
           </div>
         )}
       </div>
@@ -219,7 +230,7 @@ function CourseCard({ course, onClick }: { course: Course; onClick: (c: Course) 
         </div>
         <div style={{ fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: 17, fontWeight: 400,
           color: C.text, lineHeight: 1.3, marginBottom: 8 }}>
-          {course.title}
+          {courseTitle}
         </div>
         <div style={{ fontSize: 12, color: C.textDim, marginBottom: 12 }}>
           {course.duration}
@@ -227,9 +238,9 @@ function CourseCard({ course, onClick }: { course: Course; onClick: (c: Course) 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span style={{ fontFamily: 'Cinzel, serif', fontSize: 15, fontWeight: 500,
             color: course.price === 0 ? C.green : C.gold }}>
-            {course.priceLabel}
+            {course.price === 0 ? t('home_free') : course.priceLabel}
           </span>
-          <span style={{ fontSize: 12, color: course.accent }}>Ver más →</span>
+          <span style={{ fontSize: 12, color: course.accent }}>{t('home_see_more')}</span>
         </div>
       </div>
     </div>
@@ -240,6 +251,9 @@ function CourseCard({ course, onClick }: { course: Course; onClick: (c: Course) 
 
 function CourseModal({ course, onClose }: { course: Course; onClose: () => void }) {
   const router = useRouter()
+  const { t } = useLanguage()
+  const courseTitle = course.titleKey ? t(course.titleKey) : course.title
+  const courseDesc  = course.descKey  ? t(course.descKey)  : course.desc
 
   return (
     <div
@@ -298,10 +312,10 @@ function CourseModal({ course, onClose }: { course: Course; onClose: () => void 
           </div>
           <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: 26,
             fontWeight: 400, color: C.text, lineHeight: 1.25, marginBottom: 10 }}>
-            {course.title}
+            {courseTitle}
           </h2>
           <p style={{ fontSize: 14, color: C.textMid, lineHeight: 1.7, marginBottom: 16 }}>
-            {course.desc}
+            {courseDesc}
           </p>
 
           {/* Duration row */}
@@ -319,10 +333,10 @@ function CourseModal({ course, onClose }: { course: Course; onClose: () => void 
           {/* Price + CTA */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
             <div>
-              <div style={{ fontSize: 11, color: C.textDim, marginBottom: 2 }}>Precio</div>
+              <div style={{ fontSize: 11, color: C.textDim, marginBottom: 2 }}>{t('modal_price')}</div>
               <div style={{ fontFamily: 'Cinzel, serif', fontSize: 22,
                 color: course.price === 0 ? C.green : C.gold, fontWeight: 500 }}>
-                {course.priceLabel}
+                {course.price === 0 ? t('home_free') : course.priceLabel}
               </div>
             </div>
 
@@ -340,7 +354,7 @@ function CourseModal({ course, onClose }: { course: Course; onClose: () => void 
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = course.accentPale }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
               >
-                ▶ Continuar curso
+                {t('modal_continue')}
               </button>
             ) : (
               // Not enrolled → filled gradient button
@@ -358,7 +372,7 @@ function CourseModal({ course, onClose }: { course: Course; onClose: () => void 
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)' }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)' }}
               >
-                {course.price === 0 ? '✦ Inscribirme gratis' : '✦ Inscribirme ahora'}
+                {course.price === 0 ? t('modal_enroll_free') : t('modal_enroll')}
               </button>
             )}
           </div>
@@ -390,6 +404,7 @@ export default function HomePage() {
   const { profile } = useProfile()
   const router = useRouter()
 
+  const { t } = useLanguage()
   const [courses, setCourses]           = useState<Course[]>(STATIC_COURSES)
   const [selectedCourse, setSelected]   = useState<Course | null>(null)
   const [activeCategory, setActiveCategory] = useState('Todos')
@@ -433,8 +448,9 @@ export default function HomePage() {
 
   const firstName = profileDisplayName(profile, (user?.name as string) || '').split(' ')[0] || 'alumna'
   const enrolledCourses  = courses.filter(c => c.enrolled)
-  const categories       = ['Todos', ...Array.from(new Set(courses.map(c => c.category)))]
-  const filteredCourses  = activeCategory === 'Todos'
+  const allLabel         = t('home_filter_all')
+  const categories       = [allLabel, ...Array.from(new Set(courses.map(c => c.category)))]
+  const filteredCourses  = activeCategory === allLabel || activeCategory === 'Todos'
     ? courses
     : courses.filter(c => c.category === activeCategory)
 
@@ -464,17 +480,16 @@ export default function HomePage() {
           <div>
             <h1 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: 28,
               fontWeight: 300, color: C.text, margin: 0, lineHeight: 1.2 }}>
-              Bienvenida,{' '}
+              {t('home_welcome')}{' '}
               <em style={{ color: C.gold, fontStyle: 'italic' }}>{firstName}</em> ✦
             </h1>
             <p style={{ fontSize: 14, color: C.textMid, marginTop: 4, margin: '4px 0 0' }}>
-              Tu camino de despertar continúa.{' '}
+              {t('home_subtitle_one')}{' '}
               {enrolledCourses.length > 0 && (
                 <span>
-                  Tienes{' '}
                   <span style={{ color: C.gold, fontWeight: 500 }}>
-                    {enrolledCourses.length} {enrolledCourses.length === 1 ? 'curso activo' : 'cursos activos'}
-                  </span>.
+                    {enrolledCourses.length} {enrolledCourses.length === 1 ? t('home_subtitle_active') : t('home_subtitle_active_plural')}
+                  </span>
                 </span>
               )}
             </p>
@@ -484,7 +499,7 @@ export default function HomePage() {
         {/* ── Mis Cursos Inscritos ── */}
         {enrolledCourses.length > 0 && (
           <section style={{ marginBottom: 48 }}>
-            <SectionHeader icon="📚" title="Mis Cursos Inscritos" />
+            <SectionHeader icon="📚" title={t('home_my_courses')} />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20 }}>
               {enrolledCourses.map(c => (
                 <CourseCard key={c.id} course={c} onClick={setSelected} />
@@ -501,7 +516,7 @@ export default function HomePage() {
               <span style={{ fontSize: 16 }}>🌐</span>
               <h2 style={{ fontFamily: 'Cinzel, serif', fontSize: 12, letterSpacing: '0.16em',
                 color: C.textMid, textTransform: 'uppercase', margin: 0 }}>
-                Catálogo de Formaciones
+                {t('home_catalog')}
               </h2>
             </div>
             {/* Category pills */}

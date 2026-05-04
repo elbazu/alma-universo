@@ -14,6 +14,7 @@ import PostComposer from '@/components/community/PostComposer'
 import { listCommunityPosts } from '@/lib/posts'
 import { listHubCategories } from '@/lib/categories'
 import { getPb } from '@/lib/pocketbase'
+import { useLanguage } from '@/context/LanguageContext'
 import type { PostRecord } from '@/lib/posts'
 import type { CategoryRecord } from '@/lib/categories'
 
@@ -111,18 +112,29 @@ function PostCard({ post }: { post: PostRecord }) {
 
       {/* Footer */}
       <div className="flex items-center gap-4 pt-1 border-t border-border">
-        <button className="flex items-center gap-1.5 text-xs text-body-muted hover:text-brand-600 transition">
-          <ThumbsUp size={14} />
-          <span>{post.like_count || ''}</span>
-          <span>Me gusta</span>
-        </button>
-        <button className="flex items-center gap-1.5 text-xs text-body-muted hover:text-brand-600 transition">
-          <MessageCircle size={14} />
-          <span>{post.comment_count || ''}</span>
-          <span>Comentar</span>
-        </button>
+        <LikeCommentButtons post={post} />
       </div>
     </article>
+  )
+}
+
+// ─── Like/Comment buttons (needs t() from context) ───────────────────────────
+
+function LikeCommentButtons({ post }: { post: PostRecord }) {
+  const { t } = useLanguage()
+  return (
+    <>
+      <button className="flex items-center gap-1.5 text-xs text-body-muted hover:text-brand-600 transition">
+        <ThumbsUp size={14} />
+        <span>{post.like_count || ''}</span>
+        <span>{t('community_like')}</span>
+      </button>
+      <button className="flex items-center gap-1.5 text-xs text-body-muted hover:text-brand-600 transition">
+        <MessageCircle size={14} />
+        <span>{post.comment_count || ''}</span>
+        <span>{t('community_comment')}</span>
+      </button>
+    </>
   )
 }
 
@@ -137,6 +149,7 @@ export default function CommunityPage() {
 
   const pb = getPb()
   const user = pb.authStore.record as { name?: string; email?: string; id?: string } | null
+  const { t } = useLanguage()
 
   // Derive display name from PB auth record (Sprint 4 added user_profiles but name lives on auth record too)
   const displayName = user?.name || user?.email || 'Tú'
@@ -165,7 +178,7 @@ export default function CommunityPage() {
   return (
     <AppShell>
       <main className="max-w-3xl mx-auto px-6 py-8">
-        <h1 className="font-display text-3xl font-light mb-6" style={{ color: '#2C1F0E' }}>Comunidad</h1>
+        <h1 className="font-display text-3xl font-light mb-6" style={{ color: '#2C1F0E' }}>{t('community_title')}</h1>
         <div className="space-y-4">
 
             {/* Post composer — only for logged-in users */}
@@ -188,7 +201,7 @@ export default function CommunityPage() {
                       : 'bg-surface-secondary text-body-muted hover:bg-brand-50 hover:text-brand-600'
                   }`}
                 >
-                  Todos
+                  {t('community_filter_all')}
                 </button>
                 {categories.map(cat => (
                   <button
@@ -214,17 +227,17 @@ export default function CommunityPage() {
             ) : error ? (
               <div className="post-card p-8 text-center text-body-muted">
                 <AlertCircle size={24} className="mx-auto mb-2 text-red-400" />
-                <p className="text-sm">No se pudo cargar el feed. Revisa tu conexión.</p>
+                <p className="text-sm">{t('community_error')}</p>
                 <button onClick={loadData} className="mt-3 text-xs text-brand-600 hover:underline">
-                  Reintentar
+                  {t('community_retry')}
                 </button>
               </div>
             ) : posts.length === 0 ? (
               <div className="post-card p-12 text-center">
                 <div className="text-4xl mb-3">✨</div>
-                <p className="font-medium text-body">Todavía no hay publicaciones</p>
+                <p className="font-medium text-body">{t('community_empty')}</p>
                 <p className="text-sm text-body-muted mt-1">
-                  {user ? '¡Sé la primera en publicar algo!' : 'Inicia sesión para publicar.'}
+                  {user ? t('community_empty_auth') : t('community_empty_guest')}
                 </p>
               </div>
             ) : (

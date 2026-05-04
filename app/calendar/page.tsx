@@ -13,6 +13,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import AppShell from '@/components/layout/AppShell'
+import { useLanguage } from '@/context/LanguageContext'
 import eventsData from '@/content/events.json'
 import { fetchEvents, type CommunityEvent } from '@/lib/events'
 import {
@@ -277,6 +278,7 @@ type ViewMode = 'list' | 'grid'
 export default function CalendarPage() {
   const [events, setEvents] = useState<Event[]>(eventsData as Event[])
   const [view, setView] = useState<ViewMode>('list')
+  const { t } = useLanguage()
 
   // Load from PB on mount; fall back to JSON if PB unavailable
   useEffect(() => {
@@ -292,15 +294,15 @@ export default function CalendarPage() {
         {/* Header with view toggle */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="font-display text-3xl font-light mb-1" style={{ color: '#2C1F0E' }}>Calendario</h1>
-            <p className="text-sm" style={{ color: '#6B4F35' }}>Próximos eventos, clases en vivo y sesiones grupales.</p>
+            <h1 className="font-display text-3xl font-light mb-1" style={{ color: '#2C1F0E' }}>{t('calendar_title')}</h1>
+            <p className="text-sm" style={{ color: '#6B4F35' }}>{t('calendar_subtitle')}</p>
           </div>
 
           {/* Toggle buttons */}
           <div className="flex items-center gap-1 p-1 bg-surface border border-border rounded-xl mt-1">
             <button
               onClick={() => setView('list')}
-              title="Vista lista"
+              title={t('calendar_view_list')}
               className={`p-2 rounded-lg transition ${
                 view === 'list'
                   ? 'bg-brand-500 text-white shadow-sm'
@@ -311,7 +313,7 @@ export default function CalendarPage() {
             </button>
             <button
               onClick={() => setView('grid')}
-              title="Vista mensual"
+              title={t('calendar_view_month')}
               className={`p-2 rounded-lg transition ${
                 view === 'grid'
                   ? 'bg-brand-500 text-white shadow-sm'
@@ -332,8 +334,8 @@ export default function CalendarPage() {
           ) : (
             <div className="text-center py-16 text-gray-400">
               <div className="text-4xl mb-3">🗓️</div>
-              <p className="font-medium">No hay eventos programados</p>
-              <p className="text-sm mt-1">Los próximos eventos aparecerán aquí.</p>
+              <p className="font-medium">{t('calendar_empty')}</p>
+              <p className="text-sm mt-1">{t('calendar_empty_sub')}</p>
             </div>
           )
         ) : (

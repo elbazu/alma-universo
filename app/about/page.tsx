@@ -1,8 +1,20 @@
+'use client'
+
 import AppShell from '@/components/layout/AppShell'
+import { useLanguage } from '@/context/LanguageContext'
 import communityData from '@/content/community.json'
 import { ExternalLink } from 'lucide-react'
 
 export default function AboutPage() {
+  const { t } = useLanguage()
+
+  const pillars = [
+    { icon: '🌟', titleKey: 'about_pillar_courses',   descKey: 'about_pillar_courses_d' },
+    { icon: '🔴', titleKey: 'about_pillar_live',      descKey: 'about_pillar_live_d' },
+    { icon: '💬', titleKey: 'about_pillar_community', descKey: 'about_pillar_community_d' },
+    { icon: '🗓️', titleKey: 'about_pillar_events',    descKey: 'about_pillar_events_d' },
+  ]
+
   return (
     <AppShell>
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
@@ -23,7 +35,7 @@ export default function AboutPage() {
 
         {/* About the creator */}
         <div className="post-card p-6">
-          <h2 className="font-display text-xl font-light mb-4" style={{ color: '#2C1F0E' }}>Sobre la Creadora</h2>
+          <h2 className="font-display text-xl font-light mb-4" style={{ color: '#2C1F0E' }}>{t('about_creator')}</h2>
           <div className="flex items-start gap-4">
             <div className="avatar w-16 h-16 text-xl bg-brand-100 text-brand-600 font-semibold flex-shrink-0">
               {communityData.owner.name.charAt(0)}
@@ -43,19 +55,14 @@ export default function AboutPage() {
 
         {/* Community pillars */}
         <div className="post-card p-6">
-          <h2 className="font-display text-xl font-light mb-4" style={{ color: '#2C1F0E' }}>¿Qué encontrarás aquí?</h2>
+          <h2 className="font-display text-xl font-light mb-4" style={{ color: '#2C1F0E' }}>{t('about_pillars')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {[
-              { icon: '🌟', title: 'Cursos y lecciones', desc: 'Contenido exclusivo para tu crecimiento personal y espiritual.' },
-              { icon: '🔴', title: 'Clases en vivo', desc: 'Sesiones grupales donde nos conectamos en tiempo real.' },
-              { icon: '💬', title: 'Comunidad activa', desc: 'Un espacio seguro para compartir, preguntar y crecer juntas.' },
-              { icon: '🗓️', title: 'Eventos y rituales', desc: 'Celebraciones, lunaciones, meditaciones grupales y más.' },
-            ].map((item) => (
-              <div key={item.title} className="flex gap-3 p-3 rounded-xl" style={{ background: '#FFF9F0' }}>
+            {pillars.map((item) => (
+              <div key={item.titleKey} className="flex gap-3 p-3 rounded-xl" style={{ background: '#FFF9F0' }}>
                 <span className="text-2xl">{item.icon}</span>
                 <div>
-                  <div className="font-medium text-sm" style={{ color: '#2C1F0E' }}>{item.title}</div>
-                  <div className="text-xs mt-0.5" style={{ color: '#A8906C' }}>{item.desc}</div>
+                  <div className="font-medium text-sm" style={{ color: '#2C1F0E' }}>{t(item.titleKey)}</div>
+                  <div className="text-xs mt-0.5" style={{ color: '#A8906C' }}>{t(item.descKey)}</div>
                 </div>
               </div>
             ))}
@@ -65,7 +72,7 @@ export default function AboutPage() {
         {/* Links */}
         {communityData.links.length > 0 && (
           <div className="post-card p-6">
-            <h2 className="font-display text-xl font-light mb-4" style={{ color: '#2C1F0E' }}>Redes y enlaces</h2>
+            <h2 className="font-display text-xl font-light mb-4" style={{ color: '#2C1F0E' }}>{t('about_links')}</h2>
             <div className="space-y-2">
               {communityData.links.map((link, i) => (
                 <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"

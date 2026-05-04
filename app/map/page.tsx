@@ -4,17 +4,11 @@
  * Map page — Sprint 6.5
  *
  * Renders a Leaflet/OpenStreetMap showing community member locations.
- *
- * Privacy:  lat/lng stored in user_profiles are offset ±0.15° (~10 mi)
- *           at render time so pins are never precise.
- * Opt-in:   only members with show_location=true AND lat/lng set are shown.
- * Cluster:  pins cluster at low zoom via leaflet.markercluster (CSS only —
- *           we use a simple distance-based grouping rendered as a circle
- *           overlay because the npm cluster plugin conflicts with SSR).
  */
 
 import dynamic from 'next/dynamic'
 import AppShell from '@/components/layout/AppShell'
+import { useLanguage } from '@/context/LanguageContext'
 
 // Leaflet must be loaded client-side only — no SSR
 const MemberMap = dynamic(() => import('@/components/map/MemberMap'), {
@@ -31,13 +25,12 @@ const MemberMap = dynamic(() => import('@/components/map/MemberMap'), {
 })
 
 export default function MapPage() {
+  const { t } = useLanguage()
   return (
     <AppShell>
       <div className="max-w-4xl mx-auto px-6 py-8">
-        <h1 className="font-display text-3xl font-light mb-1" style={{ color: '#2C1F0E' }}>Mapa</h1>
-        <p className="text-sm mb-6" style={{ color: '#6B4F35' }}>
-          Miembros de la comunidad alrededor del mundo.
-        </p>
+        <h1 className="font-display text-3xl font-light mb-1" style={{ color: '#2C1F0E' }}>{t('map_title')}</h1>
+        <p className="text-sm mb-6" style={{ color: '#6B4F35' }}>{t('map_subtitle')}</p>
         <MemberMap />
       </div>
     </AppShell>

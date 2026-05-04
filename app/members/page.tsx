@@ -1,4 +1,5 @@
 import AppShell from '@/components/layout/AppShell'
+import { useLanguage } from '@/context/LanguageContext'
 import communityData from '@/content/community.json'
 import { Search, Users } from 'lucide-react'
 
@@ -8,12 +9,13 @@ const placeholderMembers = [
 ]
 
 export default function MembersPage() {
+  const { t } = useLanguage()
   return (
     <AppShell>
       <div className="max-w-4xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="font-display text-3xl font-light mb-1" style={{ color: '#2C1F0E' }}>Miembros</h1>
+            <h1 className="font-display text-3xl font-light mb-1" style={{ color: '#2C1F0E' }}>{t('members_title')}</h1>
             <p className="text-sm" style={{ color: '#6B4F35' }}>{communityData.stats.members} miembros · {communityData.stats.online} en línea</p>
           </div>
           {/* Search */}
