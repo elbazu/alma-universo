@@ -5,13 +5,28 @@ import { useRouter } from 'next/navigation'
 import { getPb } from '@/lib/pocketbase'
 
 type Step = 'initial' | 'otp-verify'
+type Tab = 'login' | 'register'
+
+const CARD_STYLE: React.CSSProperties = {
+  background: 'rgba(255, 255, 255, 0.96)',
+  border: '1px solid #E0C070',
+  borderRadius: '20px',
+  boxShadow: '0 8px 40px rgba(180, 130, 40, 0.15)',
+}
+
+const GOLD_BTN_STYLE: React.CSSProperties = {
+  background: 'linear-gradient(135deg, #C8942A, #E07B2A)',
+}
 
 export default function SignInCard() {
   const [step, setStep] = useState<Step>('initial')
+  const [activeTab, setActiveTab] = useState<Tab>('login')
   const [email, setEmail] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [otpCode, setOtpCode] = useState('')
   const [otpId, setOtpId] = useState('')
-  const [loading, setLoading] = useState<'google' | 'email' | 'verify' | null>(null)
+  const [loading, setLoading] = useState<'google' | 'email' | 'verify' | 'register' | null>(null)
   const [error, setError] = useState('')
   const router = useRouter()
 
@@ -29,7 +44,7 @@ export default function SignInCard() {
     }
   }
 
-  // ── Request OTP ─────────────────────────────────────────────────
+  // ── Request OTP (login) ─────────────────────────────────────────
   async function handleRequestOTP(e: React.FormEvent) {
     e.preventDefault()
     if (!email) return
@@ -42,6 +57,29 @@ export default function SignInCard() {
       setStep('otp-verify')
     } catch {
       setError('No pudimos enviar el código. Verifica tu correo.')
+    } finally {
+      setLoading(null)
+    }
+  }
+
+  // ── Register + send OTP ─────────────────────────────────────────
+  async function handleRegister(e: React.FormEvent) {
+    e.preventDefault()
+    if (!email || !firstName) return
+    setLoading('register')
+    setError('')
+    try {
+      const pb = getPb()
+      await pb.collection('users').create({
+        email,
+        name: `${firstName} ${lastName}`.trim(),
+        emailVisibility: true,
+      })
+      const result = await pb.collection('users').requestOTP(email)
+      setOtpId(result.otpId)
+      setStep('otp-verify')
+    } catch {
+      setError('No pudimos crear tu cuenta. El correo puede ya estar registrado.')
     } finally {
       setLoading(null)
     }
@@ -66,13 +104,14 @@ export default function SignInCard() {
   // ── OTP verification screen ─────────────────────────────────────
   if (step === 'otp-verify') {
     return (
-      <div className="glass-card w-full rounded-2xl px-8 py-8 flex flex-col gap-6">
+      <div className="w-full px-8 py-8 flex flex-col gap-6" style={CARD_STYLE}>
+        <BrandHeader />
         <div className="text-center flex flex-col gap-2">
           <div className="text-3xl animate-float">✉️</div>
-          <p className="font-display text-white/90 text-lg">Revisa tu correo</p>
-          <p className="text-white/50 text-sm leading-relaxed">
+          <p className="font-display text-amber-900 text-lg">Revisa tu correo</p>
+          <p className="text-amber-800/60 text-sm leading-relaxed">
             Enviamos un código de 6 dígitos a{' '}
-            <span className="text-rose-200/80">{email}</span>
+            <span className="text-amber-700 font-medium">{email}</span>
           </p>
         </div>
 
@@ -86,12 +125,13 @@ export default function SignInCard() {
             placeholder="000000"
             required
             autoFocus
-            className="w-full bg-white/5 border border-white/15 focus:border-rose-300/40 focus:bg-white/10 rounded-xl px-4 py-3 text-white/80 placeholder:text-white/20 text-center text-2xl tracking-[0.5em] outline-none transition-all duration-300"
+            className="w-full border border-amber-200 focus:border-amber-400 rounded-xl px-4 py-3 text-amber-900 placeholder:text-amber-300 text-center text-2xl tracking-[0.5em] outline-none transition-all bg-white"
           />
           <button
             type="submit"
             disabled={loading === 'verify' || otpCode.length < 6}
-            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-rose-400/30 to-purple-500/30 hover:from-rose-400/50 hover:to-purple-500/50 border border-rose-300/20 hover:border-rose-300/40 text-white/90 text-sm font-light tracking-wide transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full py-3 rounded-xl font-semibold text-white transition hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+            style={GOLD_BTN_STYLE}
           >
             {loading === 'verify' ? (
               <span className="flex items-center justify-center gap-2">
@@ -104,11 +144,11 @@ export default function SignInCard() {
           </button>
         </form>
 
-        {error && <p className="text-rose-300/70 text-xs text-center">{error}</p>}
+        {error && <p className="text-red-500/80 text-xs text-center">{error}</p>}
 
         <button
           onClick={() => { setStep('initial'); setOtpCode(''); setError('') }}
-          className="text-white/25 text-xs hover:text-white/50 transition-colors text-center"
+          className="text-amber-700/40 text-xs hover:text-amber-700/70 transition-colors text-center"
         >
           ← Volver
         </button>
@@ -116,65 +156,156 @@ export default function SignInCard() {
     )
   }
 
-  // ── Initial sign-in screen ──────────────────────────────────────
+  // ── Initial screen ──────────────────────────────────────────────
   return (
-    <div className="glass-card w-full rounded-2xl px-8 py-8 flex flex-col gap-6">
-      <div className="text-center">
-        <p className="text-white/60 text-sm font-light tracking-wide">
-          Entra a tu espacio sagrado
-        </p>
+    <div className="w-full px-8 py-8 flex flex-col gap-5" style={CARD_STYLE}>
+      <BrandHeader />
+
+      {/* Tabs */}
+      <div className="flex gap-1 p-1 bg-amber-50 rounded-xl">
+        <TabButton active={activeTab === 'login'} onClick={() => { setActiveTab('login'); setError('') }}>
+          Iniciar Sesión
+        </TabButton>
+        <TabButton active={activeTab === 'register'} onClick={() => { setActiveTab('register'); setError('') }}>
+          Registrarse
+        </TabButton>
       </div>
 
-      {/* Google */}
-      <button
-        onClick={handleGoogle}
-        disabled={loading !== null}
-        className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white/90 text-sm font-light tracking-wide transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {loading === 'google' ? (
-          <span className="w-4 h-4 border border-white/40 border-t-white rounded-full animate-spin" />
-        ) : (
-          <GoogleIcon />
-        )}
-        Continuar con Google
-      </button>
+      {activeTab === 'login' ? (
+        <>
+          {/* Google */}
+          <button
+            onClick={handleGoogle}
+            disabled={loading !== null}
+            className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl bg-white border border-amber-200 hover:border-amber-400 text-amber-900 text-sm font-light tracking-wide transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading === 'google' ? (
+              <span className="w-4 h-4 border border-amber-400/40 border-t-amber-600 rounded-full animate-spin" />
+            ) : (
+              <GoogleIcon />
+            )}
+            Continuar con Google
+          </button>
 
-      {/* Divider */}
-      <div className="flex items-center gap-3">
-        <div className="flex-1 h-px bg-white/10" />
-        <span className="text-white/30 text-xs tracking-widest">o</span>
-        <div className="flex-1 h-px bg-white/10" />
-      </div>
+          {/* Divider */}
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-amber-100" />
+            <span className="text-amber-400 text-xs tracking-widest">o</span>
+            <div className="flex-1 h-px bg-amber-100" />
+          </div>
 
-      {/* Email OTP */}
-      <form onSubmit={handleRequestOTP} className="flex flex-col gap-3">
-        <input
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder="tu@correo.com"
-          required
-          disabled={loading !== null}
-          className="w-full bg-white/5 border border-white/15 focus:border-rose-300/40 focus:bg-white/10 rounded-xl px-4 py-3 text-white/80 placeholder:text-white/25 text-sm outline-none transition-all duration-300 disabled:opacity-50"
-        />
-        <button
-          type="submit"
-          disabled={loading !== null || !email}
-          className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-rose-400/30 to-purple-500/30 hover:from-rose-400/50 hover:to-purple-500/50 border border-rose-300/20 hover:border-rose-300/40 text-white/90 text-sm font-light tracking-wide transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          {loading === 'email' ? (
-            <span className="flex items-center justify-center gap-2">
-              <span className="w-4 h-4 border border-white/40 border-t-white rounded-full animate-spin" />
-              Enviando...
-            </span>
-          ) : (
-            'Recibir código ✦'
-          )}
-        </button>
-      </form>
+          {/* Email OTP */}
+          <form onSubmit={handleRequestOTP} className="flex flex-col gap-3">
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="tu@correo.com"
+              required
+              disabled={loading !== null}
+              className="w-full border border-amber-200 focus:border-amber-400 rounded-xl px-4 py-3 text-amber-900 placeholder:text-amber-300 text-sm outline-none transition-all bg-white disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={loading !== null || !email}
+              className="w-full py-3 rounded-xl font-semibold text-white transition hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+              style={GOLD_BTN_STYLE}
+            >
+              {loading === 'email' ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border border-white/40 border-t-white rounded-full animate-spin" />
+                  Enviando...
+                </span>
+              ) : (
+                'Recibir código ✦'
+              )}
+            </button>
+          </form>
+        </>
+      ) : (
+        <>
+          {/* Register form */}
+          <form onSubmit={handleRegister} className="flex flex-col gap-3">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={firstName}
+                onChange={e => setFirstName(e.target.value)}
+                placeholder="Nombre"
+                required
+                disabled={loading !== null}
+                className="flex-1 border border-amber-200 focus:border-amber-400 rounded-xl px-4 py-3 text-amber-900 placeholder:text-amber-300 text-sm outline-none transition-all bg-white disabled:opacity-50"
+              />
+              <input
+                type="text"
+                value={lastName}
+                onChange={e => setLastName(e.target.value)}
+                placeholder="Apellido"
+                disabled={loading !== null}
+                className="flex-1 border border-amber-200 focus:border-amber-400 rounded-xl px-4 py-3 text-amber-900 placeholder:text-amber-300 text-sm outline-none transition-all bg-white disabled:opacity-50"
+              />
+            </div>
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="Correo electrónico"
+              required
+              disabled={loading !== null}
+              className="w-full border border-amber-200 focus:border-amber-400 rounded-xl px-4 py-3 text-amber-900 placeholder:text-amber-300 text-sm outline-none transition-all bg-white disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={loading !== null || !email || !firstName}
+              className="w-full py-3 rounded-xl font-semibold text-white transition hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+              style={GOLD_BTN_STYLE}
+            >
+              {loading === 'register' ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border border-white/40 border-t-white rounded-full animate-spin" />
+                  Creando cuenta...
+                </span>
+              ) : (
+                'Crear cuenta ✦'
+              )}
+            </button>
+          </form>
+          <p className="text-xs text-amber-800/60 text-center">
+            Al registrarte aceptas nuestros{' '}
+            <a href="/terms" className="underline hover:text-amber-700">Términos</a> y{' '}
+            <a href="/privacy" className="underline hover:text-amber-700">Política de Privacidad</a>.
+          </p>
+        </>
+      )}
 
-      {error && <p className="text-rose-300/70 text-xs text-center">{error}</p>}
+      {error && <p className="text-red-500/80 text-xs text-center">{error}</p>}
     </div>
+  )
+}
+
+function BrandHeader() {
+  return (
+    <div className="text-center mb-1">
+      <h1 className="font-cinzel text-xl font-semibold tracking-widest text-amber-900 uppercase">
+        Mi Alma en el Universo
+      </h1>
+    </div>
+  )
+}
+
+function TabButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all ${
+        active
+          ? 'bg-white shadow text-amber-900'
+          : 'text-amber-700/60 hover:text-amber-800'
+      }`}
+    >
+      {children}
+    </button>
   )
 }
 

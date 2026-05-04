@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import SignInCard from '@/components/auth/SignInCard'
+import MetatronCube from '@/components/landing/MetatronCube'
 
 export default function LandingPage() {
   const { user, isLoading } = useAuth()
@@ -17,54 +18,37 @@ export default function LandingPage() {
 
   if (isLoading || user) {
     return (
-      <div className="min-h-screen galaxy-bg flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(145deg, #FDF0D0, #EDD49A, #E0BC6E)' }}>
+        <div className="w-8 h-8 border-2 border-amber-600/40 border-t-amber-700 rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen galaxy-bg relative overflow-hidden flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center px-4 py-12"
+      style={{ background: 'linear-gradient(145deg, #FDF0D0, #EDD49A, #E0BC6E)' }}>
 
-      {/* Watercolor blobs */}
-      <div className="blob blob-purple" />
-      <div className="blob blob-teal" />
-      <div className="blob blob-rose" />
-      <div className="blob blob-gold" />
-      <div className="blob blob-violet" />
-
-      {/* Star field */}
-      <div className="stars" aria-hidden="true" />
-      <div className="stars stars-2" aria-hidden="true" />
-      <div className="stars stars-3" aria-hidden="true" />
+      {/* Soft light overlays */}
+      <div className="pointer-events-none absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full"
+        style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.45) 0%, transparent 70%)', filter: 'blur(50px)' }} />
+      <div className="pointer-events-none absolute bottom-[-5%] right-[-5%] w-[50vw] h-[50vw] rounded-full"
+        style={{ background: 'radial-gradient(circle, rgba(196,88,122,0.08) 0%, transparent 70%)', filter: 'blur(60px)' }} />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center gap-10 w-full max-w-md">
+      <div className="relative z-10 flex flex-col items-center gap-8 w-full max-w-md">
 
-        {/* Hero */}
-        <div className="text-center flex flex-col items-center gap-4">
-          <div className="text-5xl mb-2 select-none animate-float" aria-hidden="true">✦</div>
-          <h1 className="font-display text-4xl sm:text-5xl font-normal tracking-wide text-white/90 leading-tight">
-            Mi Alma
-            <br />
-            <span className="text-rose-200/80 italic">en el Universo</span>
-          </h1>
-          <p className="text-white/50 text-sm sm:text-base tracking-[0.2em] uppercase font-light">
-            Un espacio para despertar y transformar
-          </p>
+        {/* Sacred geometry */}
+        <div className="block sm:hidden">
+          <MetatronCube size={160} />
         </div>
-
-        {/* Decorative divider */}
-        <div className="flex items-center gap-3 w-full">
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-          <span className="text-white/30 text-xs tracking-widest">☽ ✦ ☾</span>
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        <div className="hidden sm:block">
+          <MetatronCube size={260} />
         </div>
 
         {/* Auth card */}
         <SignInCard />
 
-        <p className="text-white/25 text-xs text-center tracking-wide">
+        <p className="text-amber-800/40 text-xs text-center tracking-wide">
           Un espacio seguro · Solo por invitación
         </p>
       </div>
