@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import SignInCard from '@/components/auth/SignInCard'
+import MetatronCube from '@/components/landing/MetatronCube'
 
 export default function LandingPage() {
   const { user, isLoading } = useAuth()
@@ -35,6 +36,14 @@ export default function LandingPage() {
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center gap-8 w-full max-w-md">
+
+        {/* Sacred geometry */}
+        <div className="block sm:hidden">
+          <MetatronCube size={160} />
+        </div>
+        <div className="hidden sm:block">
+          <MetatronCube size={260} />
+        </div>
 
         {/* Auth card */}
         <SignInCard />
