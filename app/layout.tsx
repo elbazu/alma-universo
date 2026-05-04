@@ -8,6 +8,7 @@ import { SettingsProvider } from '@/context/SettingsContext'
 import { CommunityDataProvider } from '@/context/CommunityDataContext'
 import { CommunitySettingsProvider } from '@/context/CommunitySettingsContext'
 import { ProfileProvider } from '@/context/ProfileContext'
+import { LanguageProvider } from '@/context/LanguageContext'
 
 export const metadata: Metadata = {
   title: communityData.name,
@@ -37,19 +38,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-body bg-surface-secondary text-body antialiased">
         <ThemeProvider>
-          <AuthProvider>
-            <ProfileProvider>
-              <FlagsProvider>
-                <CommunityDataProvider>
-                  <SettingsProvider>
-                    <CommunitySettingsProvider>
-                      {children}
-                    </CommunitySettingsProvider>
-                  </SettingsProvider>
-                </CommunityDataProvider>
-              </FlagsProvider>
-            </ProfileProvider>
-          </AuthProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              <ProfileProvider>
+                <FlagsProvider>
+                  <CommunityDataProvider>
+                    <SettingsProvider>
+                      <CommunitySettingsProvider>
+                        {children}
+                      </CommunitySettingsProvider>
+                    </SettingsProvider>
+                  </CommunityDataProvider>
+                </FlagsProvider>
+              </ProfileProvider>
+            </AuthProvider>
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>
