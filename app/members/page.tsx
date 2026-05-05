@@ -1,3 +1,5 @@
+'use client'
+
 import AppShell from '@/components/layout/AppShell'
 import { useLanguage } from '@/context/LanguageContext'
 import communityData from '@/content/community.json'
